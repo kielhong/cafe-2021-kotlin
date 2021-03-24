@@ -15,5 +15,4 @@ class CafeController(private val cafeService: CafeService) {
     fun getCafe(@PathVariable url: String): Mono<Cafe> {
         return cafeService.getCafe(url)
     }
-
 }
