@@ -18,7 +18,6 @@ class CafeServiceTest {
     @Mock
     lateinit var cafeRepository: CafeRepository
 
-
     @BeforeEach
     internal fun setUp() {
         service = CafeService(cafeRepository)
@@ -27,7 +26,7 @@ class CafeServiceTest {
     @Test
     fun given_repository_when_getCafe_then_returnMonoCafe() {
         // given
-        val cafe = Cafe("id","test")
+        val cafe = Cafe("id", "test")
         given(cafeRepository.findById("test"))
             .willReturn(Mono.just(cafe))
         // when
