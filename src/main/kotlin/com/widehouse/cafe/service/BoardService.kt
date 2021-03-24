@@ -9,12 +9,10 @@ import reactor.core.publisher.Mono
 
 @Service
 class BoardService(
-    private val cafeRepository: CafeRepository,
     private val boardRepository: BoardRepository,
 ) {
     @Transactional(readOnly = true)
     fun getBoard(cafeUrl: String, boardId: String): Mono<Board> {
-        return cafeRepository.findByUrl(cafeUrl)
-            .flatMap { cafe -> boardRepository.findByCafeIdAndId(cafe.id!!, boardId) }
+        return boardRepository.findByCafeUrlAndId(cafeUrl, boardId)
     }
 }

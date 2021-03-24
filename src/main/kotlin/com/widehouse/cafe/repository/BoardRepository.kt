@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Mono
 
 interface BoardRepository : ReactiveMongoRepository<Board, String> {
-    fun findByCafeIdAndId(cafeId: String, id: String): Mono<Board>
+    fun findByCafeUrlAndId(cafeUrl: String, id: String): Mono<Board>
 }

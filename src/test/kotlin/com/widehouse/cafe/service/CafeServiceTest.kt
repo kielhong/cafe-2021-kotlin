@@ -26,17 +26,15 @@ class CafeServiceTest {
     @Test
     fun given_repository_when_getCafe_then_returnMonoCafe() {
         // given
-        val cafe = Cafe("id", "test")
-        given(cafeRepository.findById("test"))
+        val cafe = Cafe("url")
+        given(cafeRepository.findByUrl("url"))
             .willReturn(Mono.just(cafe))
         // when
-        val result = service.getCafe("test")
+        val result = service.getCafe("url")
         // then
         StepVerifier
             .create(result)
-            .assertNext { c ->
-                then(c.url).isEqualTo("test")
-            }
+            .assertNext { c -> then(c).isEqualTo(cafe) }
             .expectComplete()
             .verify()
     }

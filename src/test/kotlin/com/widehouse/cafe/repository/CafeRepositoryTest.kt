@@ -14,16 +14,13 @@ class CafeRepositoryTest @Autowired constructor(
     @Test
     fun when_findByUrl_then_returnMonoCafe() {
         // given
-        cafeRepository.save(Cafe(null, "test")).block()
+        val cafe = cafeRepository.save(Cafe("url")).block()
         // when
-        val result = cafeRepository.findByUrl("test")
+        val result = cafeRepository.findByUrl("url")
         // then
         StepVerifier
             .create(result)
-            .assertNext { cafe ->
-                then(cafe.id).isNotNull
-                then(cafe.url).isEqualTo("test")
-            }
+            .assertNext { c -> then(c).isEqualTo(cafe) }
             .expectComplete()
             .verify()
     }

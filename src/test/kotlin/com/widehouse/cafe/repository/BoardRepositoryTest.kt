@@ -1,7 +1,6 @@
 package com.widehouse.cafe.repository
 
 import com.widehouse.cafe.domain.Board
-import com.widehouse.cafe.domain.Cafe
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,9 +14,9 @@ class BoardRepositoryTest @Autowired constructor(
     @Test
     fun when_findByCafeIdAndId_then_returnMonoBoard() {
         // given
-        val board = boardRepository.save(Board("boardId", "cafeId")).block()
+        val board = boardRepository.save(Board("boardId", "cafeUrl")).block()
         // when
-        val result = boardRepository.findByCafeIdAndId("cafeId", "boardId")
+        val result = boardRepository.findByCafeUrlAndId("cafeUrl", "boardId")
         // then
         StepVerifier
             .create(result)

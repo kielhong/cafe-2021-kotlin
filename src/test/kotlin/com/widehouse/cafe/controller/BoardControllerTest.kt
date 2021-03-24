@@ -19,7 +19,7 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
     fun given_boardId_when_get_then_returnBoard() {
         // given
         given(boardService.getBoard("test", "1234"))
-            .willReturn(Mono.just(Board("1234", "12")))
+            .willReturn(Mono.just(Board("1234", "test")))
         // when
         webClient.get()
             .uri("/cafe/{url}/board/{id}", "test", "1234")
@@ -27,6 +27,6 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
             .expectStatus().isOk
             .expectBody()
             .jsonPath("$.id").isEqualTo("1234")
-            .jsonPath("$.cafeId").isEqualTo("12")
+            .jsonPath("$.cafeUrl").isEqualTo("test")
     }
 }
