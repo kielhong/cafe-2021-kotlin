@@ -5,6 +5,7 @@ import com.widehouse.cafe.domain.Cafe
 import com.widehouse.cafe.repository.BoardRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.BDDMockito.given
@@ -28,20 +29,37 @@ class BoardServiceTest {
         cafe = Cafe("test")
     }
 
-    @Test
-    fun given_cafeUrl_boardId_when_getBoard_then_returnBoard() {
-        // given
-        val board = Board("1234", cafe.url)
-        given(boardRepository.findById(board.id)).willReturn(Mono.just(board))
-        // when
-        val result = service.getBoard(cafe.url, board.id)
-        // then
-        StepVerifier
-            .create(result)
-            .assertNext { then(it).isEqualTo(board) }
-            .expectComplete()
-            .verify()
+    @Nested
+    inner class GetBoard {
+        @Test
+        fun given_cafeUrl_boardId_when_getBoard_then_returnBoard() {
+            // given
+            val board = Board("1234", cafe.url)
+            given(boardRepository.findById(board.id)).willReturn(Mono.just(board))
+            // when
+            val result = service.getBoard(cafe.url, board.id)
+            // then
+            StepVerifier
+                .create(result)
+                .assertNext { then(it).isEqualTo(board) }
+                .expectComplete()
+                .verify()
+        }
+
+        @Test
+        fun given_otherCafe_when_getBoard_thenMonoEmpty() {
+            // given
+            val board = Board("1234", "otherurl")
+            given(boardRepository.findById(board.id)).willReturn(Mono.just(board))
+            // when
+            val result = service.getBoard(cafe.url, board.id)
+            // then
+            StepVerifier
+                .create(result)
+                .verifyComplete()
+        }
     }
+
 
     @Test
     fun given_cafeUrl_when_listBoard_then_listBoardByCafe() {

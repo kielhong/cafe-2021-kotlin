@@ -44,6 +44,19 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
     }
 
     @Test
+    fun given_empty_when_get_then_404NotFound() {
+        // given
+        val cafeUrl = cafe.url
+        given(boardService.getBoard(cafeUrl, "1234"))
+            .willReturn(Mono.empty())
+        // when
+        webClient.get()
+            .uri("/cafe/{url}/board/{id}", cafeUrl, "1234")
+            .exchange()
+            .expectStatus().isNotFound
+    }
+
+    @Test
     fun given_cafeUrl_when_listByCafe_then_listBoards() {
         // given
         val cafeUrl = cafe.url
