@@ -11,7 +11,8 @@ import reactor.test.StepVerifier
 
 @DataMongoTest
 class BoardRepositoryTest @Autowired constructor(
-    private val boardRepository: BoardRepository) {
+    private val boardRepository: BoardRepository
+) {
 
     lateinit var cafe: Cafe
 

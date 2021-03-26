@@ -42,8 +42,15 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
 }
 
-tasks.test {
-    finalizedBy(tasks.jacocoTestReport)
+tasks.withType<JacocoReport> {
+    classDirectories.setFrom(
+        files(
+            classDirectories.files.map {
+                fileTree(it) { exclude("**/CafeApplicationKt.**") }
+            }
+        )
+    )
 }

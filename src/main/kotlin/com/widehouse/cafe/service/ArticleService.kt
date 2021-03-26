@@ -6,7 +6,9 @@ import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
-class ArticleService(private val articleRepository: ArticleRepository) {
+class ArticleService(
+    private val articleRepository: ArticleRepository
+) {
     fun getArticle(articleId: String): Mono<Article> {
         return articleRepository.findById(articleId)
     }

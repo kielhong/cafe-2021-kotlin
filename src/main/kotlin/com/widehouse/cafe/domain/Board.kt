@@ -6,6 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "board")
 data class Board(
-    @Id var id: String,
+    @Id val id: String,
     @Indexed val cafeUrl: String
 )

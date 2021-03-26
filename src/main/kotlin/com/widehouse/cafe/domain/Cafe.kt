@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection = "cafe")
 data class Cafe(
-    @Id val url: String)
-
+    @Id val url: String
+)
