@@ -9,7 +9,8 @@ import reactor.test.StepVerifier
 
 @DataMongoTest
 class CafeRepositoryTest @Autowired constructor(
-    private val cafeRepository: CafeRepository) {
+    private val cafeRepository: CafeRepository
+) {
 
     @Test
     fun when_findByUrl_then_returnMonoCafe() {

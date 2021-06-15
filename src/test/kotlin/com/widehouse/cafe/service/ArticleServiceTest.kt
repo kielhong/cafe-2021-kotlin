@@ -1,17 +1,12 @@
 package com.widehouse.cafe.service
 
 import com.widehouse.cafe.domain.Article
-import com.widehouse.cafe.domain.Cafe
 import com.widehouse.cafe.repository.ArticleRepository
-import com.widehouse.cafe.repository.BoardRepository
-import org.assertj.core.api.BDDAssertions
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.ArgumentMatchers
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.BDDMockito
 import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
