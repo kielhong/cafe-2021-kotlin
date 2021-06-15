@@ -20,8 +20,7 @@ class CafeControllerTest(@Autowired val webClient: WebTestClient) {
     fun given_url_when_get_then_returnCafe() {
         // given
         val cafe = Cafe("test")
-        given(cafeService.getCafe(anyString()))
-            .willReturn(Mono.just(cafe))
+        given(cafeService.getCafe(anyString())).willReturn(Mono.just(cafe))
         // when
         webClient.get()
             .uri("/cafe/test")

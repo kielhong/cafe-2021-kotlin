@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.kotlin.core.publisher.switchIfEmpty
 
@@ -23,7 +22,5 @@ class BoardController(private val boardService: BoardService) {
     }
 
     @GetMapping("cafe/{cafeUrl}/board")
-    fun listBoard(@PathVariable cafeUrl: String): Flux<Board> {
-        return boardService.listBoard(cafeUrl)
-    }
+    fun listBoard(@PathVariable cafeUrl: String) = boardService.listBoard(cafeUrl)
 }

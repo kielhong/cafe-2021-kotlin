@@ -12,7 +12,5 @@ import reactor.core.publisher.Mono
 @RequestMapping("cafe")
 class CafeController(private val cafeService: CafeService) {
     @GetMapping("{url}")
-    fun getCafe(@PathVariable url: String): Mono<Cafe> {
-        return cafeService.getCafe(url)
-    }
+    fun getCafe(@PathVariable url: String): Mono<Cafe> = cafeService.getCafe(url)
 }

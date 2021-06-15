@@ -3,7 +3,6 @@ package com.widehouse.cafe.controller
 import com.widehouse.cafe.domain.Article
 import com.widehouse.cafe.service.ArticleService
 import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.anyString
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
@@ -20,8 +19,7 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
     fun given_articleId_when_get_then_returnArticle() {
         // given
         val articleId = "1234"
-        given(articleService.getArticle(anyString()))
-            .willReturn(Mono.just(Article(articleId)))
+        given(articleService.getArticle(articleId)).willReturn(Mono.just(Article(articleId)))
         // when
         webClient.get()
             .uri("/article/{articleId}", articleId)
@@ -35,8 +33,7 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
     fun given_emptyArticle_when_get_then_404NotFound() {
         // given
         val articleId = "1234"
-        given(articleService.getArticle(anyString()))
-            .willReturn(Mono.empty())
+        given(articleService.getArticle(articleId)).willReturn(Mono.empty())
         // when
         webClient.get()
             .uri("/article/{articleId}", articleId)

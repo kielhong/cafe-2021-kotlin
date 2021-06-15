@@ -23,7 +23,7 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
     lateinit var cafe: Cafe
 
     @BeforeEach
-    internal fun setUp() {
+    fun setUp() {
         cafe = Cafe("test")
     }
 
@@ -31,15 +31,15 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
     fun given_boardId_when_get_then_returnBoard() {
         // given
         val cafeUrl = cafe.url
-        given(boardService.getBoard(cafeUrl, "1234"))
-            .willReturn(Mono.just(Board("1234", cafeUrl)))
+        val boardId = "1234"
+        given(boardService.getBoard(cafeUrl, boardId)).willReturn(Mono.just(Board(boardId, cafeUrl)))
         // when
         webClient.get()
-            .uri("/cafe/{url}/board/{id}", cafeUrl, "1234")
+            .uri("/cafe/{url}/board/{id}", cafeUrl, boardId)
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$.id").isEqualTo("1234")
+            .jsonPath("$.id").isEqualTo(boardId)
             .jsonPath("$.cafeUrl").isEqualTo(cafeUrl)
     }
 
@@ -47,11 +47,11 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
     fun given_empty_when_get_then_404NotFound() {
         // given
         val cafeUrl = cafe.url
-        given(boardService.getBoard(cafeUrl, "1234"))
-            .willReturn(Mono.empty())
+        val boardId = "1234"
+        given(boardService.getBoard(cafeUrl, boardId)).willReturn(Mono.empty())
         // when
         webClient.get()
-            .uri("/cafe/{url}/board/{id}", cafeUrl, "1234")
+            .uri("/cafe/{url}/board/{id}", cafeUrl, boardId)
             .exchange()
             .expectStatus().isNotFound
     }
@@ -62,14 +62,13 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
         val cafeUrl = cafe.url
         val board1 = Board("1", cafeUrl)
         val board2 = Board("2", cafeUrl)
-        given(boardService.listBoard(cafeUrl))
-            .willReturn(Flux.just(board1, board2))
+        given(boardService.listBoard(cafeUrl)).willReturn(Flux.just(board1, board2))
         // when
         webClient.get()
             .uri("/cafe/{url}/board", cafeUrl)
             .exchange()
             .expectStatus().isOk
             .expectBodyList(Board::class.java)
-            .consumeWith<ListBodySpec<Board>> { list -> then(list.responseBody).containsExactly(board1, board2) }
+            .consumeWith<ListBodySpec<Board>> { then(it.responseBody).containsExactly(board1, board2) }
     }
 }

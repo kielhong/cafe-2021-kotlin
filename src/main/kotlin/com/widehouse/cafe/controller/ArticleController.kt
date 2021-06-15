@@ -12,7 +12,6 @@ import reactor.kotlin.core.publisher.switchIfEmpty
 
 @RestController
 class ArticleController(private val articleService: ArticleService) {
-
     @GetMapping("article/{articleId}")
     fun getArticle(@PathVariable articleId: String): Mono<Article> {
         return articleService.getArticle(articleId)
