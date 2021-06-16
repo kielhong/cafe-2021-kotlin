@@ -60,7 +60,6 @@ class BoardServiceTest {
         }
     }
 
-
     @Test
     fun given_cafeUrl_when_listBoard_then_listBoardByCafe() {
         // given

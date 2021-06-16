@@ -9,6 +9,7 @@ plugins {
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
     jacoco
+    `java-test-fixtures`
     id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
 }
 
