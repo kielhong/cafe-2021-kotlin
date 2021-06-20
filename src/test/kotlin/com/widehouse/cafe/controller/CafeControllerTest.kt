@@ -19,16 +19,14 @@ class CafeControllerTest(@Autowired val webClient: WebTestClient) {
     @Test
     fun given_url_when_get_then_returnCafe() {
         // given
-        val cafe = Cafe("id","test")
-        given(cafeService.getCafe(anyString()))
-            .willReturn(Mono.just(cafe))
+        val cafe = Cafe("test")
+        given(cafeService.getCafe(anyString())).willReturn(Mono.just(cafe))
         // when
         webClient.get()
             .uri("/cafe/test")
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$.id").isEqualTo("id")
             .jsonPath("$.url").isEqualTo("test")
     }
 }
