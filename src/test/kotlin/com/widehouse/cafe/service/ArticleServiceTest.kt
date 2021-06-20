@@ -24,7 +24,7 @@ internal class ArticleServiceTest {
     @BeforeEach
     internal fun setUp() {
         service = ArticleService(articleRepository)
-        article = Article("1234")
+        article = Article("1234", "board")
     }
 
     @Test
