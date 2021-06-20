@@ -1,6 +1,5 @@
 package com.widehouse.cafe.controller
 
-import com.widehouse.cafe.domain.Article
 import com.widehouse.cafe.service.ArticleService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -13,8 +12,6 @@ import reactor.kotlin.core.publisher.switchIfEmpty
 @RestController
 class ArticleController(private val articleService: ArticleService) {
     @GetMapping("article/{articleId}")
-    fun getArticle(@PathVariable articleId: String): Mono<Article> {
-        return articleService.getArticle(articleId)
+    fun getArticle(@PathVariable articleId: String) = articleService.getArticle(articleId)
             .switchIfEmpty { Mono.error(ResponseStatusException(HttpStatus.NOT_FOUND)) }
-    }
 }

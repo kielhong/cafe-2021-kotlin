@@ -2,6 +2,8 @@ package com.widehouse.cafe.controller
 
 import com.widehouse.cafe.domain.Article
 import com.widehouse.cafe.service.ArticleService
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,29 +17,32 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
     @MockBean
     lateinit var articleService: ArticleService
 
-    @Test
-    fun given_articleId_when_get_then_returnArticle() {
-        // given
+    @Nested
+    @DisplayName("Get a Article")
+    inner class GetArticle {
         val articleId = "1234"
-        given(articleService.getArticle(articleId)).willReturn(Mono.just(Article(articleId)))
-        // when
-        webClient.get()
-            .uri("/article/{articleId}", articleId)
-            .exchange()
-            .expectStatus().isOk
-            .expectBody()
-            .jsonPath("$.id").isEqualTo(articleId)
-    }
+        @Test
+        fun `articleId에 해당하는 Article 반환`() {
+            // given
+            given(articleService.getArticle(articleId)).willReturn(Mono.just(Article(articleId)))
+            // when
+            webClient.get()
+                .uri("/article/{articleId}", articleId)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(articleId)
+        }
 
-    @Test
-    fun given_emptyArticle_when_get_then_404NotFound() {
-        // given
-        val articleId = "1234"
-        given(articleService.getArticle(articleId)).willReturn(Mono.empty())
-        // when
-        webClient.get()
-            .uri("/article/{articleId}", articleId)
-            .exchange()
-            .expectStatus().isNotFound
+        @Test
+        fun `articleId에 해당하는 Article이 없으면 404 NotFound`() {
+            // given
+            given(articleService.getArticle(articleId)).willReturn(Mono.empty())
+            // when
+            webClient.get()
+                .uri("/article/{articleId}", articleId)
+                .exchange()
+                .expectStatus().isNotFound
+        }
     }
 }
