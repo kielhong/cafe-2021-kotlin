@@ -14,7 +14,7 @@ import reactor.kotlin.core.publisher.switchIfEmpty
 class ArticleController(private val articleService: ArticleService) {
     @GetMapping("article/{articleId}")
     fun getArticle(@PathVariable articleId: String) = articleService.getArticle(articleId)
-            .switchIfEmpty { Mono.error(ResponseStatusException(HttpStatus.NOT_FOUND)) }
+        .switchIfEmpty { Mono.error(ResponseStatusException(HttpStatus.NOT_FOUND)) }
 
     @GetMapping("article")
     fun listArticle(@RequestParam boardId: String) = articleService.listArticleByBoard(boardId)

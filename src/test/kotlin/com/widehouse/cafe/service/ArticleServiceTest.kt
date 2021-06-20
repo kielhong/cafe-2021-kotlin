@@ -10,6 +10,7 @@ import org.mockito.ArgumentMatchers.anyString
 import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
@@ -19,25 +20,41 @@ internal class ArticleServiceTest {
     @Mock
     lateinit var articleRepository: ArticleRepository
 
-    lateinit var article: Article
+    lateinit var boardId: String
+    lateinit var article1: Article
+    lateinit var article2: Article
 
     @BeforeEach
     internal fun setUp() {
         service = ArticleService(articleRepository)
-        article = Article("1234", "board")
+
+        boardId = "board"
+        article1 = Article("1234", boardId)
+        article2 = Article("abcd", boardId)
     }
 
     @Test
-    fun given_articleId_when_getArticle_then_returnArticle() {
+    fun `articleId가 주어지면 해당하는 article을 한 개 반환`() {
         // given
-        given(articleRepository.findById(anyString())).willReturn(Mono.just(article))
+        given(articleRepository.findById(anyString())).willReturn(Mono.just(article1))
         // when
-        val result = service.getArticle("1234")
+        val result = service.getArticle(article1.id)
         // then
-        StepVerifier
-            .create(result)
-            .assertNext { then(it).isEqualTo(article) }
-            .expectComplete()
-            .verify()
+        StepVerifier.create(result)
+            .assertNext { then(it).isEqualTo(article1) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `boardId 가 주어지면 boardId에 연결된 모든 article목록을 반환`() {
+        // given
+        given(articleRepository.findAllByBoardId(anyString())).willReturn(Flux.just(article1, article2))
+        // when
+        val result = service.listArticleByBoard(boardId)
+        // then
+        StepVerifier.create(result)
+            .assertNext { then(it).isEqualTo(article1) }
+            .assertNext { then(it).isEqualTo(article2) }
+            .verifyComplete()
     }
 }
