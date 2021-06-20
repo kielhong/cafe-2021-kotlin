@@ -9,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import reactor.test.StepVerifier
 
 @DataMongoTest
-class ArticleRepositoryTest  @Autowired constructor(
+class ArticleRepositoryTest @Autowired constructor(
     private val articleRepository: ArticleRepository
 ) {
     lateinit var boardId: String
