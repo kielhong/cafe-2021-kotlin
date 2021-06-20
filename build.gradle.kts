@@ -2,15 +2,18 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     val kotlinVersion = "1.5.10"
+    val springVersion = "2.5.1"
+    val dependencyVersion = "1.0.11.RELEASE"
+    val ktlintVersion = "10.0.0"
 
-    id("org.springframework.boot") version "2.5.1"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.springframework.boot") version springVersion
+    id("io.spring.dependency-management") version dependencyVersion
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
     jacoco
     `java-test-fixtures`
-    id("org.jlleitschuh.gradle.ktlint") version "10.0.0"
+    id("org.jlleitschuh.gradle.ktlint") version ktlintVersion
 }
 
 group = "com.widehouse"
