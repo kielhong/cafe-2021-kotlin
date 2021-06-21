@@ -21,7 +21,8 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
     @Nested
     @DisplayName("Get a Article")
     inner class GetArticle {
-        val articleId = "1234"
+        private val articleId = "1234"
+
         @Test
         fun `articleId에 해당하는 Article 반환`() {
             // given
@@ -59,6 +60,25 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
             // when
             webClient.get()
                 .uri("/article?boardId={boardId}", boardId)
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.size()").isEqualTo(2)
+        }
+    }
+
+    @Nested
+    @DisplayName("Get Articles by Cafe")
+    inner class ArticleListByCafe {
+        @Test
+        fun `list article by Cafe`() {
+            // given
+            val cafeUrl = "url"
+            given(articleService.listArticleByCafe(cafeUrl))
+                .willReturn(Flux.just(Article("1", "board1"), Article("2", "board2")))
+            // when
+            webClient.get()
+                .uri("/article?cafeUrl={cafeUrl}", cafeUrl)
                 .exchange()
                 .expectStatus().isOk
         }
