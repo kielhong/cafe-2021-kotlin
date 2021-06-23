@@ -1,9 +1,11 @@
 package com.widehouse.cafe.article.controller
 
-import com.widehouse.cafe.cafe.CafeFixtures
-import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.article.model.Article
 import com.widehouse.cafe.article.service.ArticleService
+import com.widehouse.cafe.board.BoardFixtures
+import com.widehouse.cafe.cafe.CafeFixtures
+import com.widehouse.cafe.cafe.model.Cafe
+import com.widehouse.cafe.model.Board
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -15,6 +17,7 @@ import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.util.UUID
 
 @WebFluxTest(ArticleController::class)
 internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
@@ -22,10 +25,12 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
     lateinit var articleService: ArticleService
 
     lateinit var cafe: Cafe
+    lateinit var board: Board
 
     @BeforeEach
     internal fun setUp() {
         cafe = CafeFixtures.create()
+        board = BoardFixtures.create(UUID.randomUUID().toString(), cafe.id)
     }
 
     @Nested
@@ -64,12 +69,11 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
         @Test
         fun `list article by Board`() {
             // given
-            val boardId = "1234"
-            given(articleService.listArticleByBoard(boardId))
-                .willReturn(Flux.just(Article("1", boardId), Article("2", boardId)))
+            given(articleService.listArticleByBoard(board.id))
+                .willReturn(Flux.just(Article("1", board.id), Article("2", board.id)))
             // when
             webClient.get()
-                .uri("/article?boardId={boardId}", boardId)
+                .uri("/article?boardId={boardId}", board.id)
                 .exchange()
                 .expectStatus().isOk
                 .expectBody()
