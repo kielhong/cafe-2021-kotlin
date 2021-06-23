@@ -21,6 +21,6 @@ class ArticleController(private val articleService: ArticleService) {
     @GetMapping("article", params = ["boardId"])
     fun listArticleByBoard(@RequestParam boardId: String): Flux<Article> = articleService.listArticleByBoard(boardId)
 
-    @GetMapping("article", params = ["cafeUrl"])
-    fun listArticleByCafe(@RequestParam cafeUrl: String): Flux<Article> = articleService.listArticleByCafe(cafeUrl)
+    @GetMapping("article", params = ["cafeId"])
+    fun listArticleByCafe(@RequestParam cafeId: String): Flux<Article> = articleService.listArticleByCafe(cafeId)
 }

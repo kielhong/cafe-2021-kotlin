@@ -12,15 +12,15 @@ import reactor.kotlin.core.publisher.switchIfEmpty
 
 @RestController
 class BoardController(private val boardService: BoardService) {
-    @GetMapping("cafe/{cafeUrl}/board/{boardId}")
+    @GetMapping("cafe/{cafeId}/board/{boardId}")
     fun getBoard(
-        @PathVariable cafeUrl: String,
+        @PathVariable cafeId: String,
         @PathVariable boardId: String
     ): Mono<Board> {
-        return boardService.getBoard(cafeUrl, boardId)
+        return boardService.getBoard(cafeId, boardId)
             .switchIfEmpty { Mono.error(ResponseStatusException(HttpStatus.NOT_FOUND)) }
     }
 
-    @GetMapping("cafe/{cafeUrl}/board")
-    fun listBoard(@PathVariable cafeUrl: String) = boardService.listBoard(cafeUrl)
+    @GetMapping("cafe/{cafeId}/board")
+    fun listBoard(@PathVariable cafeId: String) = boardService.listBoard(cafeId)
 }

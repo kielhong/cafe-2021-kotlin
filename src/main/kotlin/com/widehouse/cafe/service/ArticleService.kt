@@ -16,8 +16,8 @@ class ArticleService(
 
     fun listArticleByBoard(boardId: String): Flux<Article> = articleRepository.findByBoardId(boardId)
 
-    fun listArticleByCafe(cafeUrl: String): Flux<Article> {
-        val boardIds = boardRepository.findByCafeUrl(cafeUrl)
+    fun listArticleByCafe(cafeId: String): Flux<Article> {
+        val boardIds = boardRepository.findByCafeId(cafeId)
             .map { it.id }
             .collectList()
             .blockOptional()

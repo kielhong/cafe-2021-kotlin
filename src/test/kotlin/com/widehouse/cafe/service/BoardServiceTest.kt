@@ -1,7 +1,7 @@
 package com.widehouse.cafe.service
 
-import com.widehouse.cafe.model.Board
 import com.widehouse.cafe.cafe.model.Cafe
+import com.widehouse.cafe.model.Board
 import com.widehouse.cafe.repository.BoardRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
@@ -65,7 +65,7 @@ class BoardServiceTest {
         // given
         val board1 = Board("1", cafe.id)
         val board2 = Board("2", cafe.id)
-        given(boardRepository.findByCafeUrl(cafe.id))
+        given(boardRepository.findByCafeId(cafe.id))
             .willReturn(Flux.just(board1, board2))
         // when
         val result = service.listBoard(cafe.id)

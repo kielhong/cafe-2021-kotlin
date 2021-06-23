@@ -1,5 +1,6 @@
 package com.widehouse.cafe.repository
 
+import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.model.Board
 import com.widehouse.cafe.cafe.model.Cafe
 import org.assertj.core.api.BDDAssertions.then
@@ -13,21 +14,20 @@ import reactor.test.StepVerifier
 class BoardRepositoryTest @Autowired constructor(
     private val boardRepository: BoardRepository
 ) {
-
     lateinit var cafe: Cafe
 
     @BeforeEach
     internal fun setUp() {
-        cafe = Cafe("test")
+        cafe = CafeFixtures.create()
     }
 
     @Test
     fun when_findByCafeUrl_then_returnFluxBoard() {
         // given
-        val board1 = boardRepository.save(Board("1", "cafeUrl")).block()
-        val board2 = boardRepository.save(Board("2", "cafeUrl")).block()
+        val board1 = boardRepository.save(Board("1", cafe.id)).block()
+        val board2 = boardRepository.save(Board("2", cafe.id)).block()
         // when
-        val result = boardRepository.findByCafeUrl("cafeUrl")
+        val result = boardRepository.findByCafeId(cafe.id)
         // then
         StepVerifier
             .create(result)

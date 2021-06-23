@@ -1,7 +1,10 @@
 package com.widehouse.cafe.controller
 
+import com.widehouse.cafe.cafe.CafeFixtures
+import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.model.Article
 import com.widehouse.cafe.service.ArticleService
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -17,6 +20,13 @@ import reactor.core.publisher.Mono
 internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
     @MockBean
     lateinit var articleService: ArticleService
+
+    lateinit var cafe: Cafe
+
+    @BeforeEach
+    internal fun setUp() {
+        cafe = CafeFixtures.create()
+    }
 
     @Nested
     @DisplayName("Get a Article")
@@ -73,12 +83,11 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
         @Test
         fun `list article by Cafe`() {
             // given
-            val cafeUrl = "url"
-            given(articleService.listArticleByCafe(cafeUrl))
+            given(articleService.listArticleByCafe(cafe.id))
                 .willReturn(Flux.just(Article("1", "board1"), Article("2", "board2")))
             // when
             webClient.get()
-                .uri("/article?cafeUrl={cafeUrl}", cafeUrl)
+                .uri("/article?cafeId={cafeId}", cafe.id)
                 .exchange()
                 .expectStatus().isOk
         }

@@ -1,7 +1,8 @@
 package com.widehouse.cafe.controller
 
-import com.widehouse.cafe.model.Board
+import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
+import com.widehouse.cafe.model.Board
 import com.widehouse.cafe.service.BoardService
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
@@ -24,7 +25,7 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
 
     @BeforeEach
     fun setUp() {
-        cafe = Cafe("test")
+        cafe = CafeFixtures.create()
     }
 
     @Test
@@ -35,12 +36,12 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
         given(boardService.getBoard(cafeId, boardId)).willReturn(Mono.just(Board(boardId, cafeId)))
         // when
         webClient.get()
-            .uri("/cafe/{url}/board/{id}", cafeId, boardId)
+            .uri("/cafe/{cafeId}/board/{boardId}", cafeId, boardId)
             .exchange()
             .expectStatus().isOk
             .expectBody()
             .jsonPath("$.id").isEqualTo(boardId)
-            .jsonPath("$.cafeUrl").isEqualTo(cafeId)
+            .jsonPath("$.cafeId").isEqualTo(cafeId)
     }
 
     @Test
@@ -51,7 +52,7 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
         given(boardService.getBoard(cafeId, boardId)).willReturn(Mono.empty())
         // when
         webClient.get()
-            .uri("/cafe/{url}/board/{id}", cafeId, boardId)
+            .uri("/cafe/{cafeId}/board/{boardId}", cafeId, boardId)
             .exchange()
             .expectStatus().isNotFound
     }

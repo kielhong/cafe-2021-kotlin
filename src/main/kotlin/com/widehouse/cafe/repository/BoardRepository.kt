@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Flux
 
 interface BoardRepository : ReactiveMongoRepository<Board, String> {
-    fun findByCafeUrl(cafeUrl: String): Flux<Board>
+    fun findByCafeId(cafeId: String): Flux<Board>
 }

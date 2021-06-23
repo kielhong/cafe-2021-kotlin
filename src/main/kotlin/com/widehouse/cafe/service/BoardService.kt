@@ -12,13 +12,13 @@ class BoardService(
     private val boardRepository: BoardRepository,
 ) {
     @Transactional(readOnly = true)
-    fun getBoard(cafeUrl: String, boardId: String): Mono<Board> {
+    fun getBoard(cafeId: String, boardId: String): Mono<Board> {
         return boardRepository.findById(boardId)
-            .filter { it.cafeUrl == cafeUrl }
+            .filter { it.cafeId == cafeId }
     }
 
     @Transactional(readOnly = true)
-    fun listBoard(cafeUrl: String): Flux<Board> {
-        return boardRepository.findByCafeUrl(cafeUrl)
+    fun listBoard(cafeId: String): Flux<Board> {
+        return boardRepository.findByCafeId(cafeId)
     }
 }

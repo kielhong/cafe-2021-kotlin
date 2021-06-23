@@ -67,7 +67,7 @@ internal class ArticleServiceTest {
     fun `cafeUrl이 주어지면 cafeUrl에 연결된 모든 article목록을 반환`() {
         // given
         val cafeUrl = "url"
-        given(boardRepository.findByCafeUrl(anyString())).willReturn(Flux.just(Board("1", cafeUrl), Board("2", cafeUrl)))
+        given(boardRepository.findByCafeId(anyString())).willReturn(Flux.just(Board("1", cafeUrl), Board("2", cafeUrl)))
         given(articleRepository.findByBoardIdIn(anyList())).willReturn(Flux.just(article1, article2))
         // when
         val result = service.listArticleByCafe(cafeUrl)
