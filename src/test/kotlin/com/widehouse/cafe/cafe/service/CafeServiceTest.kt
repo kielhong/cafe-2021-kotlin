@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
 @ExtendWith(MockitoExtension::class)
-class CafeServiceTest {
+internal class CafeServiceTest {
     lateinit var service: CafeService
     @Mock
     lateinit var cafeRepository: CafeRepository

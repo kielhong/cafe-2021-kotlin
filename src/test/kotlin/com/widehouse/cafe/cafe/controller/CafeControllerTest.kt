@@ -12,7 +12,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import reactor.core.publisher.Mono
 
 @WebFluxTest(CafeController::class)
-class CafeControllerTest(@Autowired val webClient: WebTestClient) {
+internal class CafeControllerTest(@Autowired val webClient: WebTestClient) {
     @MockBean
     lateinit var cafeService: CafeService
 

@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import reactor.test.StepVerifier
 
 @DataMongoTest
-class CafeRepositoryTest @Autowired constructor(
+internal class CafeRepositoryTest @Autowired constructor(
     private val cafeRepository: CafeRepository
 ) {
 

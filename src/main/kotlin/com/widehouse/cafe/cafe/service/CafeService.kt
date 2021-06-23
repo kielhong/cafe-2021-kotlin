@@ -9,7 +9,5 @@ import reactor.core.publisher.Mono
 @Service
 class CafeService(private val cafeRepository: CafeRepository) {
     @Transactional(readOnly = true)
-    fun getCafe(url: String): Mono<Cafe> {
-        return cafeRepository.findById(url)
-    }
+    fun getCafe(id: String): Mono<Cafe> = cafeRepository.findById(id)
 }
