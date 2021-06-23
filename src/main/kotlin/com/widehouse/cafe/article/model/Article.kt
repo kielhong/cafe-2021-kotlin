@@ -1,4 +1,4 @@
-package com.widehouse.cafe.model
+package com.widehouse.cafe.article.model
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed

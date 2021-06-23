@@ -1,7 +1,7 @@
-package com.widehouse.cafe.controller
+package com.widehouse.cafe.article.controller
 
-import com.widehouse.cafe.model.Article
-import com.widehouse.cafe.service.ArticleService
+import com.widehouse.cafe.article.model.Article
+import com.widehouse.cafe.article.service.ArticleService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable

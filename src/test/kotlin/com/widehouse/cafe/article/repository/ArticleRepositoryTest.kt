@@ -1,6 +1,7 @@
-package com.widehouse.cafe.repository
+package com.widehouse.cafe.article.repository
 
-import com.widehouse.cafe.model.Article
+import com.widehouse.cafe.article.model.Article
+import com.widehouse.cafe.article.repository.ArticleRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +9,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import reactor.test.StepVerifier
 
 @DataMongoTest
-class ArticleRepositoryTest @Autowired constructor(
+internal class ArticleRepositoryTest @Autowired constructor(
     private val articleRepository: ArticleRepository
 ) {
     @Test
