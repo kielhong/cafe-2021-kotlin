@@ -1,7 +1,7 @@
-package com.widehouse.cafe.service
+package com.widehouse.cafe.article.service
 
-import com.widehouse.cafe.model.Article
-import com.widehouse.cafe.repository.ArticleRepository
+import com.widehouse.cafe.article.model.Article
+import com.widehouse.cafe.article.repository.ArticleRepository
 import com.widehouse.cafe.repository.BoardRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
