@@ -1,6 +1,6 @@
 package com.widehouse.cafe.comment.service
 
-import com.widehouse.cafe.comment.domain.Comment
+import com.widehouse.cafe.comment.model.Comment
 import com.widehouse.cafe.comment.repository.CommentRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux

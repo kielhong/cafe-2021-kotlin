@@ -1,6 +1,6 @@
 package com.widehouse.cafe.service
 
-import com.widehouse.cafe.domain.Article
+import com.widehouse.cafe.model.Article
 import com.widehouse.cafe.repository.ArticleRepository
 import com.widehouse.cafe.repository.BoardRepository
 import org.springframework.stereotype.Service

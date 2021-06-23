@@ -1,7 +1,7 @@
-package com.widehouse.cafe.controller
+package com.widehouse.cafe.cafe.controller
 
-import com.widehouse.cafe.domain.Cafe
-import com.widehouse.cafe.service.CafeService
+import com.widehouse.cafe.cafe.model.Cafe
+import com.widehouse.cafe.cafe.service.CafeService
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.BDDMockito.given

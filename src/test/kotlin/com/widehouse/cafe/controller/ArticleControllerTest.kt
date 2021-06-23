@@ -1,6 +1,6 @@
 package com.widehouse.cafe.controller
 
-import com.widehouse.cafe.domain.Article
+import com.widehouse.cafe.model.Article
 import com.widehouse.cafe.service.ArticleService
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested

@@ -1,6 +1,6 @@
 package com.widehouse.cafe.comment
 
-import com.widehouse.cafe.comment.domain.Comment
+import com.widehouse.cafe.comment.model.Comment
 import java.util.UUID
 
 class CommentFixtures {

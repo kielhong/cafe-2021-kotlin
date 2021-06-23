@@ -1,6 +1,6 @@
 package com.widehouse.cafe.repository
 
-import com.widehouse.cafe.domain.Article
+import com.widehouse.cafe.model.Article
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

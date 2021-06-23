@@ -1,6 +1,6 @@
 package com.widehouse.cafe.controller
 
-import com.widehouse.cafe.domain.Board
+import com.widehouse.cafe.model.Board
 import com.widehouse.cafe.service.BoardService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping

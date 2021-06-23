@@ -1,7 +1,7 @@
 package com.widehouse.cafe.service
 
-import com.widehouse.cafe.domain.Article
-import com.widehouse.cafe.domain.Board
+import com.widehouse.cafe.model.Article
+import com.widehouse.cafe.model.Board
 import com.widehouse.cafe.repository.ArticleRepository
 import com.widehouse.cafe.repository.BoardRepository
 import org.assertj.core.api.BDDAssertions.then

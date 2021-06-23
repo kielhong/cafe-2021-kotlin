@@ -1,6 +1,6 @@
 package com.widehouse.cafe.comment.repository
 
-import com.widehouse.cafe.comment.domain.Comment
+import com.widehouse.cafe.comment.model.Comment
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Flux
 

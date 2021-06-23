@@ -46,12 +46,12 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.withType<Test> {
+tasks.test {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
 }
 
-tasks.withType<JacocoReport> {
+tasks.jacocoTestReport {
     classDirectories.setFrom(
         files(
             classDirectories.files.map {

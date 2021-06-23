@@ -1,6 +1,6 @@
-package com.widehouse.cafe.repository
+package com.widehouse.cafe.cafe.repository
 
-import com.widehouse.cafe.domain.Cafe
+import com.widehouse.cafe.cafe.model.Cafe
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Mono
 

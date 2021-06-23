@@ -1,6 +1,6 @@
 package com.widehouse.cafe.comment.repository
 
-import com.widehouse.cafe.comment.domain.Comment
+import com.widehouse.cafe.comment.model.Comment
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
