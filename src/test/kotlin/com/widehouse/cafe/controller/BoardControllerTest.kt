@@ -30,28 +30,28 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
     @Test
     fun given_boardId_when_get_then_returnBoard() {
         // given
-        val cafeUrl = cafe.url
+        val cafeId = cafe.id
         val boardId = "1234"
-        given(boardService.getBoard(cafeUrl, boardId)).willReturn(Mono.just(Board(boardId, cafeUrl)))
+        given(boardService.getBoard(cafeId, boardId)).willReturn(Mono.just(Board(boardId, cafeId)))
         // when
         webClient.get()
-            .uri("/cafe/{url}/board/{id}", cafeUrl, boardId)
+            .uri("/cafe/{url}/board/{id}", cafeId, boardId)
             .exchange()
             .expectStatus().isOk
             .expectBody()
             .jsonPath("$.id").isEqualTo(boardId)
-            .jsonPath("$.cafeUrl").isEqualTo(cafeUrl)
+            .jsonPath("$.cafeUrl").isEqualTo(cafeId)
     }
 
     @Test
     fun given_empty_when_get_then_404NotFound() {
         // given
-        val cafeUrl = cafe.url
+        val cafeId = cafe.id
         val boardId = "1234"
-        given(boardService.getBoard(cafeUrl, boardId)).willReturn(Mono.empty())
+        given(boardService.getBoard(cafeId, boardId)).willReturn(Mono.empty())
         // when
         webClient.get()
-            .uri("/cafe/{url}/board/{id}", cafeUrl, boardId)
+            .uri("/cafe/{url}/board/{id}", cafeId, boardId)
             .exchange()
             .expectStatus().isNotFound
     }
@@ -59,13 +59,13 @@ class BoardControllerTest(@Autowired val webClient: WebTestClient) {
     @Test
     fun given_cafeUrl_when_listByCafe_then_listBoards() {
         // given
-        val cafeUrl = cafe.url
-        val board1 = Board("1", cafeUrl)
-        val board2 = Board("2", cafeUrl)
-        given(boardService.listBoard(cafeUrl)).willReturn(Flux.just(board1, board2))
+        val cafeId = cafe.id
+        val board1 = Board("1", cafeId)
+        val board2 = Board("2", cafeId)
+        given(boardService.listBoard(cafeId)).willReturn(Flux.just(board1, board2))
         // when
         webClient.get()
-            .uri("/cafe/{url}/board", cafeUrl)
+            .uri("/cafe/{url}/board", cafeId)
             .exchange()
             .expectStatus().isOk
             .expectBodyList(Board::class.java)

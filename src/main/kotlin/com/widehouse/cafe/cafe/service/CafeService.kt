@@ -10,6 +10,6 @@ import reactor.core.publisher.Mono
 class CafeService(private val cafeRepository: CafeRepository) {
     @Transactional(readOnly = true)
     fun getCafe(url: String): Mono<Cafe> {
-        return cafeRepository.findByUrl(url)
+        return cafeRepository.findById(url)
     }
 }

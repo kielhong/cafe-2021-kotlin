@@ -17,7 +17,7 @@ class CafeRepositoryTest @Autowired constructor(
         // given
         val cafe = cafeRepository.save(Cafe("url")).block()
         // when
-        val result = cafeRepository.findByUrl("url")
+        val result = cafeRepository.findById("url")
         // then
         StepVerifier
             .create(result)

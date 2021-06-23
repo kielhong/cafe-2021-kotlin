@@ -34,10 +34,10 @@ class BoardServiceTest {
         @Test
         fun given_cafeUrl_boardId_when_getBoard_then_returnBoard() {
             // given
-            val board = Board("1234", cafe.url)
+            val board = Board("1234", cafe.id)
             given(boardRepository.findById(board.id)).willReturn(Mono.just(board))
             // when
-            val result = service.getBoard(cafe.url, board.id)
+            val result = service.getBoard(cafe.id, board.id)
             // then
             StepVerifier
                 .create(result)
@@ -52,7 +52,7 @@ class BoardServiceTest {
             val board = Board("1234", "otherurl")
             given(boardRepository.findById(board.id)).willReturn(Mono.just(board))
             // when
-            val result = service.getBoard(cafe.url, board.id)
+            val result = service.getBoard(cafe.id, board.id)
             // then
             StepVerifier
                 .create(result)
@@ -63,12 +63,12 @@ class BoardServiceTest {
     @Test
     fun given_cafeUrl_when_listBoard_then_listBoardByCafe() {
         // given
-        val board1 = Board("1", cafe.url)
-        val board2 = Board("2", cafe.url)
-        given(boardRepository.findByCafeUrl(cafe.url))
+        val board1 = Board("1", cafe.id)
+        val board2 = Board("2", cafe.id)
+        given(boardRepository.findByCafeUrl(cafe.id))
             .willReturn(Flux.just(board1, board2))
         // when
-        val result = service.listBoard(cafe.url)
+        val result = service.listBoard(cafe.id)
         // then
         StepVerifier
             .create(result)

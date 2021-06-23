@@ -1,5 +1,6 @@
 package com.widehouse.cafe.cafe.controller
 
+import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.cafe.service.CafeService
 import org.junit.jupiter.api.Test
@@ -17,9 +18,9 @@ class CafeControllerTest(@Autowired val webClient: WebTestClient) {
     lateinit var cafeService: CafeService
 
     @Test
-    fun given_url_when_get_then_returnCafe() {
+    fun given_id_when_get_then_returnCafe() {
         // given
-        val cafe = Cafe("test")
+        val cafe = CafeFixtures.create()
         given(cafeService.getCafe(anyString())).willReturn(Mono.just(cafe))
         // when
         webClient.get()
@@ -27,6 +28,6 @@ class CafeControllerTest(@Autowired val webClient: WebTestClient) {
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$.url").isEqualTo("test")
+            .jsonPath("$.id").isEqualTo("test")
     }
 }
