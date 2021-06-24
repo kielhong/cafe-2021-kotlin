@@ -29,8 +29,7 @@ internal class CafeServiceTest {
     fun given_repository_when_getCafe_then_returnMonoCafe() {
         // given
         val cafe = Cafe("url")
-        given(cafeRepository.findById("url"))
-            .willReturn(Mono.just(cafe))
+        given(cafeRepository.findById("url")).willReturn(Mono.just(cafe))
         // when
         val result = service.getCafe("url")
         // then

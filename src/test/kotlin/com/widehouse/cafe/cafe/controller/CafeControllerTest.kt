@@ -56,5 +56,13 @@ internal class CafeControllerTest(@Autowired val webClient: WebTestClient) {
             // then
             verify(cafeService).create(cafe)
         }
+
+        @Test
+        fun given_existId_then_409Conflict() {
+            // given
+            val cafe = Cafe("test")
+            given(cafeService.create(cafe))
+                .willThrow()
+        }
     }
 }
