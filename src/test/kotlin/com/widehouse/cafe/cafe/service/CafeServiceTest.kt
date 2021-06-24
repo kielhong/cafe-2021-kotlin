@@ -1,7 +1,6 @@
 package com.widehouse.cafe.cafe.service
 
 import com.widehouse.cafe.cafe.CafeFixtures
-import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.cafe.repository.CafeRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
@@ -28,16 +27,14 @@ internal class CafeServiceTest {
     @Test
     fun given_repository_when_getCafe_then_returnMonoCafe() {
         // given
-        val cafe = Cafe("url")
-        given(cafeRepository.findById("url")).willReturn(Mono.just(cafe))
+        val cafe = CafeFixtures.create()
+        given(cafeRepository.findById(cafe.id)).willReturn(Mono.just(cafe))
         // when
-        val result = service.getCafe("url")
+        val result = service.getCafe(cafe.id)
         // then
-        StepVerifier
-            .create(result)
-            .assertNext { c -> then(c).isEqualTo(cafe) }
-            .expectComplete()
-            .verify()
+        StepVerifier.create(result)
+            .assertNext { then(it).isEqualTo(cafe) }
+            .verifyComplete()
     }
 
     @Nested

@@ -4,6 +4,7 @@ import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
 import org.assertj.core.api.BDDAssertions.then
 import org.assertj.core.api.BDDAssertions.thenThrownBy
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
@@ -14,18 +15,22 @@ import reactor.test.StepVerifier
 internal class CafeRepositoryTest @Autowired constructor(
     private val cafeRepository: CafeRepository
 ) {
+    @AfterEach
+    internal fun tearDown() {
+        cafeRepository.deleteAll().block()
+    }
+
     @Test
     fun when_findByUrl_then_returnMonoCafe() {
         // given
-        val cafe = cafeRepository.save(Cafe("url")).block()
+        val cafe = cafeRepository.save(Cafe("test")).block()
         // when
-        val result = cafeRepository.findById("url")
+        val result = cafeRepository.findById("test")
         // then
         StepVerifier
             .create(result)
-            .assertNext { c -> then(c).isEqualTo(cafe) }
-            .expectComplete()
-            .verify()
+            .assertNext { then(it).isEqualTo(cafe) }
+            .verifyComplete()
     }
 
     @Test

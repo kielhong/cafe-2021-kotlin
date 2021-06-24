@@ -12,6 +12,8 @@ import org.mockito.BDDMockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.dao.DuplicateKeyException
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters
@@ -61,8 +63,14 @@ internal class CafeControllerTest(@Autowired val webClient: WebTestClient) {
         fun given_existId_then_409Conflict() {
             // given
             val cafe = Cafe("test")
-            given(cafeService.create(cafe))
-                .willThrow()
+            given(cafeService.create(cafe)).willThrow(DuplicateKeyException::class.java)
+            // when
+            webClient.post()
+                .uri("/cafe")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(cafe))
+                .exchange()
+                .expectStatus().isEqualTo(HttpStatus.CONFLICT)
         }
     }
 }
