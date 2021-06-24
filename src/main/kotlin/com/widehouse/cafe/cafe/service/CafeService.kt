@@ -10,4 +10,9 @@ import reactor.core.publisher.Mono
 class CafeService(private val cafeRepository: CafeRepository) {
     @Transactional(readOnly = true)
     fun getCafe(id: String): Mono<Cafe> = cafeRepository.findById(id)
+
+    @Transactional
+    fun create(cafe: Cafe): Mono<Cafe> {
+        return cafeRepository.save(cafe)
+    }
 }
