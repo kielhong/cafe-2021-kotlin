@@ -24,7 +24,7 @@ internal class CafeRepositoryTest @Autowired constructor(
     @Test
     fun when_findByUrl_then_returnMonoCafe() {
         // given
-        val cafe = template.save(Cafe("test")).block()
+        val cafe = template.save(Cafe("test", "name", "desc")).block()
         // when
         val result = cafeRepository.findById(cafe!!.id)
         // then

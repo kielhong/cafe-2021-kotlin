@@ -1,5 +1,6 @@
 package com.widehouse.cafe.service
 
+import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.model.Board
 import com.widehouse.cafe.repository.BoardRepository
@@ -26,7 +27,7 @@ class BoardServiceTest {
     @BeforeEach
     internal fun setUp() {
         service = BoardService(boardRepository)
-        cafe = Cafe("test")
+        cafe = CafeFixtures.create()
     }
 
     @Nested
