@@ -3,6 +3,7 @@ package com.widehouse.cafe.cafe.controller
 import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.cafe.service.CafeService
+import com.widehouse.cafe.common.exception.AlreadyExistException
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -12,7 +13,6 @@ import org.mockito.BDDMockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
-import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
@@ -63,7 +63,7 @@ internal class CafeControllerTest(@Autowired val webClient: WebTestClient) {
         fun given_existId_then_409Conflict() {
             // given
             val cafe = Cafe("test")
-            given(cafeService.create(cafe)).willThrow(DuplicateKeyException::class.java)
+            given(cafeService.create(cafe)).willReturn(Mono.error(AlreadyExistException("")))
             // when
             webClient.post()
                 .uri("/cafe")

@@ -3,29 +3,30 @@ package com.widehouse.cafe.cafe.repository
 import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
 import org.assertj.core.api.BDDAssertions.then
-import org.assertj.core.api.BDDAssertions.thenThrownBy
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.dao.DuplicateKeyException
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import reactor.test.StepVerifier
 
 @DataMongoTest
 internal class CafeRepositoryTest @Autowired constructor(
+    private val template: ReactiveMongoTemplate,
     private val cafeRepository: CafeRepository
 ) {
     @AfterEach
     internal fun tearDown() {
-        cafeRepository.deleteAll().block()
+        template.dropCollection(Cafe::class.java).subscribe()
     }
 
     @Test
     fun when_findByUrl_then_returnMonoCafe() {
         // given
-        val cafe = cafeRepository.save(Cafe("test")).block()
+        val cafe = template.save(Cafe("test")).block()
         // when
-        val result = cafeRepository.findById("test")
+        val result = cafeRepository.findById(cafe!!.id)
         // then
         StepVerifier
             .create(result)
@@ -37,10 +38,12 @@ internal class CafeRepositoryTest @Autowired constructor(
     fun given_duplicated_cafe_when_insert_throw_Exception() {
         // given
         val cafe = CafeFixtures.create()
+        template.save(cafe).block()
         // when
-        cafeRepository.insert(cafe).block()
+        val result = cafeRepository.insert(cafe)
         // then
-        thenThrownBy { cafeRepository.insert(cafe).block() }
-            .isInstanceOf(DuplicateKeyException::class.java)
+        StepVerifier.create(result)
+            .expectError(DuplicateKeyException::class.java)
+            .verify()
     }
 }

@@ -2,6 +2,8 @@ package com.widehouse.cafe.cafe.service
 
 import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.cafe.repository.CafeRepository
+import com.widehouse.cafe.common.exception.AlreadyExistException
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Mono
@@ -13,6 +15,7 @@ class CafeService(private val cafeRepository: CafeRepository) {
 
     @Transactional
     fun create(cafe: Cafe): Mono<Cafe> {
-        return cafeRepository.save(cafe)
+        return cafeRepository.insert(cafe)
+            .onErrorMap(DuplicateKeyException::class.java) { AlreadyExistException(cafe.id) }
     }
 }

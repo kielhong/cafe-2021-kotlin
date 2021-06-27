@@ -2,7 +2,7 @@ package com.widehouse.cafe.cafe.controller
 
 import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.cafe.service.CafeService
-import org.springframework.dao.DuplicateKeyException
+import com.widehouse.cafe.common.exception.AlreadyExistException
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,5 +27,5 @@ class CafeController(private val cafeService: CafeService) {
 
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ExceptionHandler
-    fun handle(ex: DuplicateKeyException) {}
+    fun handle(ex: AlreadyExistException) {}
 }
