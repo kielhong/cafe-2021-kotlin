@@ -5,9 +5,12 @@ import org.junit.jupiter.api.Test
 
 internal class CafeTest {
     @Test
-    fun getUrl() {
-        val cafe = Cafe("test")
+    fun testConstruction() {
+        val cafe = Cafe("test", "name", "desc")
         // then
-        then(cafe.id).isEqualTo("test")
+        then(cafe)
+            .hasFieldOrPropertyWithValue("id", "test")
+            .hasFieldOrPropertyWithValue("name", "name")
+            .hasFieldOrPropertyWithValue("description", "desc")
     }
 }

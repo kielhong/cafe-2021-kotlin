@@ -3,7 +3,9 @@ package com.widehouse.cafe.cafe.model
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
-@Document(collection = "cafe")
+@Document
 data class Cafe(
-    @Id val id: String
+    @Id val id: String,
+    val name: String,
+    val description: String
 )

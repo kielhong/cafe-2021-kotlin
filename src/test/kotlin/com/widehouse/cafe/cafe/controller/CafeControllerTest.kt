@@ -1,7 +1,6 @@
 package com.widehouse.cafe.cafe.controller
 
 import com.widehouse.cafe.cafe.CafeFixtures
-import com.widehouse.cafe.cafe.model.Cafe
 import com.widehouse.cafe.cafe.service.CafeService
 import com.widehouse.cafe.common.exception.AlreadyExistException
 import org.junit.jupiter.api.DisplayName
@@ -31,11 +30,13 @@ internal class CafeControllerTest(@Autowired val webClient: WebTestClient) {
         given(cafeService.getCafe(anyString())).willReturn(Mono.just(cafe))
         // when
         webClient.get()
-            .uri("/cafe/test")
+            .uri("/cafe/{id}", cafe.id)
             .exchange()
             .expectStatus().isOk
             .expectBody()
-            .jsonPath("$.id").isEqualTo("test")
+            .jsonPath("$.id").isEqualTo(cafe.id)
+            .jsonPath("$.name").isEqualTo(cafe.name)
+            .jsonPath("$.description").isEqualTo(cafe.description)
     }
 
     @Nested
@@ -44,8 +45,8 @@ internal class CafeControllerTest(@Autowired val webClient: WebTestClient) {
         @Test
         fun then_ok() {
             // given
-            val cafe = Cafe("test")
-            given(cafeService.create(cafe)).willReturn(Mono.just(Cafe("test")))
+            val cafe = CafeFixtures.create()
+            given(cafeService.create(cafe)).willReturn(Mono.just(cafe))
             // when
             webClient.post()
                 .uri("/cafe")
@@ -62,8 +63,8 @@ internal class CafeControllerTest(@Autowired val webClient: WebTestClient) {
         @Test
         fun given_existId_then_409Conflict() {
             // given
-            val cafe = Cafe("test")
-            given(cafeService.create(cafe)).willReturn(Mono.error(AlreadyExistException("")))
+            val cafe = CafeFixtures.create()
+            given(cafeService.create(cafe)).willReturn(Mono.error(AlreadyExistException(cafe.id)))
             // when
             webClient.post()
                 .uri("/cafe")
