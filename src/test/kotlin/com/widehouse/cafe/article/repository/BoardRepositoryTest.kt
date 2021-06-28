@@ -1,8 +1,8 @@
-package com.widehouse.cafe.repository
+package com.widehouse.cafe.article.repository
 
+import com.widehouse.cafe.article.model.Board
 import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
-import com.widehouse.cafe.model.Board
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

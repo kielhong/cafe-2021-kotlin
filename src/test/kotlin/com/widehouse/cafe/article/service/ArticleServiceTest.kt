@@ -1,9 +1,9 @@
 package com.widehouse.cafe.article.service
 
 import com.widehouse.cafe.article.model.Article
+import com.widehouse.cafe.article.model.Board
 import com.widehouse.cafe.article.repository.ArticleRepository
-import com.widehouse.cafe.model.Board
-import com.widehouse.cafe.repository.BoardRepository
+import com.widehouse.cafe.article.repository.BoardRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

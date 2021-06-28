@@ -1,6 +1,6 @@
 package com.widehouse.cafe.board
 
-import com.widehouse.cafe.model.Board
+import com.widehouse.cafe.article.model.Board
 
 class BoardFixtures {
     companion object {

@@ -2,7 +2,7 @@ package com.widehouse.cafe.article.service
 
 import com.widehouse.cafe.article.model.Article
 import com.widehouse.cafe.article.repository.ArticleRepository
-import com.widehouse.cafe.repository.BoardRepository
+import com.widehouse.cafe.article.repository.BoardRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import java.util.Collections

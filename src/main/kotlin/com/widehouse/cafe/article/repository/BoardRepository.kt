@@ -1,6 +1,6 @@
-package com.widehouse.cafe.repository
+package com.widehouse.cafe.article.repository
 
-import com.widehouse.cafe.model.Board
+import com.widehouse.cafe.article.model.Board
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Flux
 
