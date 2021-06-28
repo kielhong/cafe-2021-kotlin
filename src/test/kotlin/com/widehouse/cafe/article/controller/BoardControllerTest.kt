@@ -1,8 +1,8 @@
 package com.widehouse.cafe.article.controller
 
+import com.widehouse.cafe.article.BoardFixtures
 import com.widehouse.cafe.article.model.Board
 import com.widehouse.cafe.article.service.BoardService
-import com.widehouse.cafe.board.BoardFixtures
 import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
 import org.assertj.core.api.BDDAssertions.then

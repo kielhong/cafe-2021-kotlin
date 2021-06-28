@@ -8,6 +8,7 @@ import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyList
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.BDDMockito.given
@@ -34,8 +35,8 @@ internal class ArticleServiceTest {
         service = ArticleService(articleRepository, boardRepository)
 
         boardId = "board"
-        article1 = Article("1234", boardId)
-        article2 = Article("abcd", boardId)
+        article1 = Article("1234", boardId, "title1", "body1")
+        article2 = Article("abcd", boardId, "title2", "body2")
     }
 
     @Test
@@ -43,7 +44,7 @@ internal class ArticleServiceTest {
         // given
         given(articleRepository.findById(anyString())).willReturn(Mono.just(article1))
         // when
-        val result = service.getArticle(article1.id)
+        val result = service.getArticle(article1.id!!)
         // then
         StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(article1) }
@@ -55,7 +56,7 @@ internal class ArticleServiceTest {
         // given
         given(articleRepository.findByBoardId(anyString())).willReturn(Flux.just(article1, article2))
         // when
-        val result = service.listArticleByBoard(boardId)
+        val result = service.listByBoard(boardId)
         // then
         StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(article1) }
@@ -64,17 +65,32 @@ internal class ArticleServiceTest {
     }
 
     @Test
-    fun `cafeUrl이 주어지면 cafeUrl에 연결된 모든 article목록을 반환`() {
+    fun `cafeId가 주어지면 cafeId에 연결된 모든 article목록을 반환`() {
         // given
         val cafeUrl = "url"
         given(boardRepository.findByCafeId(anyString())).willReturn(Flux.just(Board("1", cafeUrl), Board("2", cafeUrl)))
         given(articleRepository.findByBoardIdIn(anyList())).willReturn(Flux.just(article1, article2))
         // when
-        val result = service.listArticleByCafe(cafeUrl)
+        val result = service.listByCafe(cafeUrl)
         // then
         StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(article1) }
             .assertNext { then(it).isEqualTo(article2) }
+            .verifyComplete()
+    }
+
+    @Test
+    fun `article 생성`() {
+        // given
+        val request = Article(null, "boardId", "title", "body")
+        val article = Article("id", request.boardId, request.title, request.body)
+        given(articleRepository.save(any(Article::class.java)))
+            .willReturn(Mono.just(article))
+        // when
+        var result = service.create(request)
+        // then
+        StepVerifier.create(result)
+            .assertNext { then(it).isEqualTo(article) }
             .verifyComplete()
     }
 }
