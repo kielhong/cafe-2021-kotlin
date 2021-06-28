@@ -15,8 +15,8 @@ internal class ArticleRepositoryTest @Autowired constructor(
     fun testFindByBoardId() {
         // given
         val boardId = "boardId"
-        val article1 = articleRepository.save(Article("1", boardId)).block()
-        val article2 = articleRepository.save(Article("2", boardId)).block()
+        val article1 = articleRepository.save(Article("1", boardId, "title1", "body1")).block()
+        val article2 = articleRepository.save(Article("2", boardId, "title2", "body2")).block()
         // when
         val result = articleRepository.findByBoardId(boardId)
         // then
@@ -29,8 +29,8 @@ internal class ArticleRepositoryTest @Autowired constructor(
     @Test
     fun testFindBoardIdIn() {
         // given
-        val article1 = articleRepository.save(Article("1", "boardId1")).block()
-        val article2 = articleRepository.save(Article("2", "boardId2")).block()
+        val article1 = articleRepository.save(Article("1", "boardId1", "title1", "body1")).block()
+        val article2 = articleRepository.save(Article("2", "boardId2", "title1", "body1")).block()
         // when
         val result = articleRepository.findByBoardIdIn(listOf("boardId1", "boardId2"))
         // then

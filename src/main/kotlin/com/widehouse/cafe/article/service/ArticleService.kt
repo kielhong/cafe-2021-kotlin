@@ -5,6 +5,7 @@ import com.widehouse.cafe.article.repository.ArticleRepository
 import com.widehouse.cafe.article.repository.BoardRepository
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 import java.util.Collections
 
 @Service
@@ -14,9 +15,9 @@ class ArticleService(
 ) {
     fun getArticle(articleId: String) = articleRepository.findById(articleId)
 
-    fun listArticleByBoard(boardId: String): Flux<Article> = articleRepository.findByBoardId(boardId)
+    fun listByBoard(boardId: String): Flux<Article> = articleRepository.findByBoardId(boardId)
 
-    fun listArticleByCafe(cafeId: String): Flux<Article> {
+    fun listByCafe(cafeId: String): Flux<Article> {
         val boardIds = boardRepository.findByCafeId(cafeId)
             .map { it.id }
             .collectList()
@@ -26,4 +27,6 @@ class ArticleService(
 
         return articleRepository.findByBoardIdIn(boardIds)
     }
+
+    fun create(article: Article): Mono<Article> = articleRepository.save(article)
 }

@@ -1,4 +1,4 @@
-package com.widehouse.cafe.board
+package com.widehouse.cafe.article
 
 import com.widehouse.cafe.article.model.Board
 
