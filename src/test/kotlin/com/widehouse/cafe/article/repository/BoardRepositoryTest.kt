@@ -1,8 +1,8 @@
-package com.widehouse.cafe.repository
+package com.widehouse.cafe.article.repository
 
+import com.widehouse.cafe.article.model.Board
 import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
-import com.widehouse.cafe.model.Board
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -29,11 +29,9 @@ class BoardRepositoryTest @Autowired constructor(
         // when
         val result = boardRepository.findByCafeId(cafe.id)
         // then
-        StepVerifier
-            .create(result)
+        StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(board1) }
             .assertNext { then(it).isEqualTo(board2) }
-            .expectComplete()
-            .verify()
+            .verifyComplete()
     }
 }

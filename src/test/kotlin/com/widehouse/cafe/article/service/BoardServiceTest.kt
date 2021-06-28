@@ -1,9 +1,9 @@
-package com.widehouse.cafe.service
+package com.widehouse.cafe.article.service
 
+import com.widehouse.cafe.article.model.Board
+import com.widehouse.cafe.article.repository.BoardRepository
 import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
-import com.widehouse.cafe.model.Board
-import com.widehouse.cafe.repository.BoardRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -38,25 +38,10 @@ class BoardServiceTest {
             val board = Board("1234", cafe.id)
             given(boardRepository.findById(board.id)).willReturn(Mono.just(board))
             // when
-            val result = service.getBoard(cafe.id, board.id)
+            val result = service.getBoard(board.id)
             // then
-            StepVerifier
-                .create(result)
+            StepVerifier.create(result)
                 .assertNext { then(it).isEqualTo(board) }
-                .expectComplete()
-                .verify()
-        }
-
-        @Test
-        fun given_otherCafe_when_getBoard_thenMonoEmpty() {
-            // given
-            val board = Board("1234", "otherurl")
-            given(boardRepository.findById(board.id)).willReturn(Mono.just(board))
-            // when
-            val result = service.getBoard(cafe.id, board.id)
-            // then
-            StepVerifier
-                .create(result)
                 .verifyComplete()
         }
     }
@@ -71,11 +56,9 @@ class BoardServiceTest {
         // when
         val result = service.listBoard(cafe.id)
         // then
-        StepVerifier
-            .create(result)
+        StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(board1) }
             .assertNext { then(it).isEqualTo(board2) }
-            .expectComplete()
-            .verify()
+            .verifyComplete()
     }
 }
