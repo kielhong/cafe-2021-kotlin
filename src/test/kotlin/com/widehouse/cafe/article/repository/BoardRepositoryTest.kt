@@ -29,11 +29,9 @@ class BoardRepositoryTest @Autowired constructor(
         // when
         val result = boardRepository.findByCafeId(cafe.id)
         // then
-        StepVerifier
-            .create(result)
+        StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(board1) }
             .assertNext { then(it).isEqualTo(board2) }
-            .expectComplete()
-            .verify()
+            .verifyComplete()
     }
 }
