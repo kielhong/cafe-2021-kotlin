@@ -49,7 +49,7 @@ internal class ArticleServiceTest {
         // given
         given(articleRepository.findById(anyString())).willReturn(Mono.just(article1))
         // when
-        val result = service.getArticle(article1.id!!)
+        val result = service.getArticle(article1.id)
         // then
         StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(article1) }

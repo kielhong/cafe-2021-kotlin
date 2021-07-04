@@ -14,8 +14,6 @@ class CafeService(private val cafeRepository: CafeRepository) {
     fun getCafe(id: String): Mono<Cafe> = cafeRepository.findById(id)
 
     @Transactional
-    fun create(cafe: Cafe): Mono<Cafe> {
-        return cafeRepository.insert(cafe)
-            .onErrorMap(DuplicateKeyException::class.java) { AlreadyExistException(cafe.id) }
-    }
+    fun create(cafe: Cafe): Mono<Cafe> = cafeRepository.insert(cafe)
+        .onErrorMap(DuplicateKeyException::class.java) { AlreadyExistException(cafe.id) }
 }

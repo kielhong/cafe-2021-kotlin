@@ -16,7 +16,7 @@ class ArticleService(
     private val articleRepository: ArticleRepository,
     private val boardRepository: BoardRepository
 ) {
-    fun getArticle(articleId: String) = articleRepository.findById(articleId)
+    fun getArticle(articleId: String): Mono<Article> = articleRepository.findById(articleId)
 
     fun listByBoard(boardId: String): Flux<Article> = articleRepository.findByBoardId(boardId)
 

@@ -32,10 +32,8 @@ class ArticleController(private val articleService: ArticleService) {
     fun listByCafe(@RequestParam cafeId: String): Flux<Article> = articleService.listByCafe(cafeId)
 
     @PostMapping("article")
-    fun create(@RequestBody articleDto: ArticleDto): Mono<Map<String, String>> {
-        return articleService.create(articleDto)
-            .map { mapOf("id" to it.id) }
-    }
+    fun create(@RequestBody articleDto: ArticleDto) = articleService.create(articleDto)
+        .map { mapOf("id" to it.id) }
 
     @PutMapping("article")
     fun update(@RequestBody articleDto: ArticleDto) = articleService.update(articleDto)
@@ -43,5 +41,5 @@ class ArticleController(private val articleService: ArticleService) {
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler
-    fun handle(ex: DataNotFoundException) {}
+    fun handle(ex: DataNotFoundException) { }
 }
