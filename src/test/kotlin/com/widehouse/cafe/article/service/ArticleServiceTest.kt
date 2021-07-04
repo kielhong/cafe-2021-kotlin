@@ -1,12 +1,16 @@
 package com.widehouse.cafe.article.service
 
 import com.widehouse.cafe.article.Article
+import com.widehouse.cafe.article.ArticleFixtures
 import com.widehouse.cafe.article.controller.dto.ArticleDto
 import com.widehouse.cafe.article.model.Board
 import com.widehouse.cafe.article.repository.ArticleRepository
 import com.widehouse.cafe.article.repository.BoardRepository
+import com.widehouse.cafe.common.exception.DataNotFoundException
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 import org.mockito.ArgumentMatchers.any
@@ -45,7 +49,7 @@ internal class ArticleServiceTest {
         // given
         given(articleRepository.findById(anyString())).willReturn(Mono.just(article1))
         // when
-        val result = service.getArticle(article1.id!!)
+        val result = service.getArticle(article1.id)
         // then
         StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(article1) }
@@ -88,10 +92,43 @@ internal class ArticleServiceTest {
         given(articleRepository.save(any(Article::class.java)))
             .willReturn(Mono.just(article))
         // when
-        var result = service.create(request)
+        val result = service.create(request)
         // then
         StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(article) }
             .verifyComplete()
+    }
+
+    @Nested
+    @DisplayName("Article 변경")
+    inner class UpdateArticle {
+        private val article = ArticleFixtures.create()
+        private val request = ArticleDto(article.id, "newBoardId", "newTitle", "newBody")
+
+        @Test
+        fun `존재하는 article이면 변경된 article 반환`() {
+            // given
+            val updatedArticle = Article(article.id, request.boardId, request.title, request.body)
+            given(articleRepository.findById(request.id)).willReturn(Mono.just(article))
+            given(articleRepository.save(any(Article::class.java))).willReturn((Mono.just(updatedArticle)))
+            // when
+            val result = service.update(request)
+            // then
+            StepVerifier.create(result)
+                .assertNext { then(it).isEqualTo(updatedArticle) }
+                .verifyComplete()
+        }
+
+        @Test
+        fun `존재하지 않는 article이면 DataNotFoundException 반환`() {
+            // given
+            given(articleRepository.findById(request.id)).willReturn(Mono.empty())
+            // when
+            val result = service.update(request)
+            // then
+            StepVerifier.create(result)
+                .expectError(DataNotFoundException::class.java)
+                .verify()
+        }
     }
 }
