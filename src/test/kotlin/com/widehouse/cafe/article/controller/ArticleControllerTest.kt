@@ -1,8 +1,9 @@
 package com.widehouse.cafe.article.controller
 
+import com.widehouse.cafe.article.Article
 import com.widehouse.cafe.article.ArticleFixtures
 import com.widehouse.cafe.article.BoardFixtures
-import com.widehouse.cafe.article.model.Article
+import com.widehouse.cafe.article.controller.dto.ArticleDto
 import com.widehouse.cafe.article.model.Board
 import com.widehouse.cafe.article.service.ArticleService
 import com.widehouse.cafe.cafe.CafeFixtures
@@ -43,20 +44,20 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
         @Test
         fun `articleId에 해당하는 Article 반환`() {
             // given
-            given(articleService.getArticle(article.id!!)).willReturn(Mono.just(article))
+            given(articleService.getArticle(article.id)).willReturn(Mono.just(article))
             // when
             webClient.get()
                 .uri("/article/{articleId}", article.id)
                 .exchange()
                 .expectStatus().isOk
                 .expectBody()
-                .jsonPath("$.id").isEqualTo(article.id!!)
+                .jsonPath("$.id").isEqualTo(article.id)
         }
 
         @Test
         fun `articleId에 해당하는 Article이 없으면 404 NotFound`() {
             // given
-            given(articleService.getArticle(article.id!!)).willReturn(Mono.empty())
+            given(articleService.getArticle(article.id)).willReturn(Mono.empty())
             // when
             webClient.get()
                 .uri("/article/{articleId}", article.id)
@@ -110,7 +111,7 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
         @Test
         fun `create article then ok`() {
             // given
-            val request = Article(boardId = "board", title = "title", body = "body")
+            val request = ArticleDto(boardId = "board", title = "title", body = "body")
             val article = Article("articleId", request.boardId, request.title, request.body)
             given(articleService.create(request)).willReturn(Mono.just(article))
             // when
@@ -121,7 +122,7 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
                 .exchange()
                 .expectStatus().isOk
                 .expectBody()
-                .jsonPath("$.id").isEqualTo(article.id!!)
+                .jsonPath("$.id").isEqualTo(article.id)
         }
     }
 }

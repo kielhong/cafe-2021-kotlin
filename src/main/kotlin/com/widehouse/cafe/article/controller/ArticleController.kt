@@ -1,6 +1,7 @@
 package com.widehouse.cafe.article.controller
 
-import com.widehouse.cafe.article.model.Article
+import com.widehouse.cafe.article.Article
+import com.widehouse.cafe.article.controller.dto.ArticleDto
 import com.widehouse.cafe.article.service.ArticleService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
@@ -27,8 +28,8 @@ class ArticleController(private val articleService: ArticleService) {
     fun listByCafe(@RequestParam cafeId: String): Flux<Article> = articleService.listByCafe(cafeId)
 
     @PostMapping("article")
-    fun create(@RequestBody article: Article): Mono<Map<String, String?>> {
-        return articleService.create(article)
+    fun create(@RequestBody articleDto: ArticleDto): Mono<Map<String, String>> {
+        return articleService.create(articleDto)
             .map { mapOf("id" to it.id) }
     }
 }
