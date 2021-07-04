@@ -1,6 +1,7 @@
 package com.widehouse.cafe.article.service
 
-import com.widehouse.cafe.article.model.Article
+import com.widehouse.cafe.article.Article
+import com.widehouse.cafe.article.controller.dto.ArticleDto
 import com.widehouse.cafe.article.model.Board
 import com.widehouse.cafe.article.repository.ArticleRepository
 import com.widehouse.cafe.article.repository.BoardRepository
@@ -82,7 +83,7 @@ internal class ArticleServiceTest {
     @Test
     fun `article 생성`() {
         // given
-        val request = Article(null, "boardId", "title", "body")
+        val request = ArticleDto(boardId = "boardId", title = "title", body = "body")
         val article = Article("id", request.boardId, request.title, request.body)
         given(articleRepository.save(any(Article::class.java)))
             .willReturn(Mono.just(article))
