@@ -8,6 +8,7 @@ import com.widehouse.cafe.article.model.Board
 import com.widehouse.cafe.article.service.ArticleService
 import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.model.Cafe
+import com.widehouse.cafe.common.exception.DataNotFoundException
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -123,6 +124,43 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
                 .expectStatus().isOk
                 .expectBody()
                 .jsonPath("$.id").isEqualTo(article.id)
+        }
+    }
+
+    @Nested
+    @DisplayName("Update Article")
+    inner class UpdateArticle {
+        private val article = ArticleFixtures.create()
+        private val request = ArticleDto(article.id, "newBoardId", "newTitle", "newBody")
+
+        @Test
+        fun `exist article then update ok`() {
+            // given
+            given(articleService.update(request))
+                .willReturn(Mono.just(Article(article.id, request.boardId, request.title, request.body)))
+            // when
+            webClient.put()
+                .uri("/article")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(request))
+                .exchange()
+                .expectStatus().isOk
+                .expectBody()
+                .jsonPath("$.id").isEqualTo(article.id)
+        }
+
+        @Test
+        fun `not exist article then 404 error`() {
+            // given
+            given(articleService.update(request))
+                .willReturn(Mono.error(DataNotFoundException(request.id)))
+            // then
+            webClient.put()
+                .uri("/article")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(request))
+                .exchange()
+                .expectStatus().isNotFound
         }
     }
 }

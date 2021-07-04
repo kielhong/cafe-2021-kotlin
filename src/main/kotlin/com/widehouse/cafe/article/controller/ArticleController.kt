@@ -3,12 +3,16 @@ package com.widehouse.cafe.article.controller
 import com.widehouse.cafe.article.Article
 import com.widehouse.cafe.article.controller.dto.ArticleDto
 import com.widehouse.cafe.article.service.ArticleService
+import com.widehouse.cafe.common.exception.DataNotFoundException
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.server.ResponseStatusException
 import reactor.core.publisher.Flux
@@ -32,4 +36,12 @@ class ArticleController(private val articleService: ArticleService) {
         return articleService.create(articleDto)
             .map { mapOf("id" to it.id) }
     }
+
+    @PutMapping("article")
+    fun update(@RequestBody articleDto: ArticleDto) = articleService.update(articleDto)
+        .map { mapOf("id" to it.id) }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ExceptionHandler
+    fun handle(ex: DataNotFoundException) {}
 }
