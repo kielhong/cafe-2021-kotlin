@@ -18,7 +18,7 @@ class ArticleService(
 ) {
     fun getArticle(articleId: String): Mono<Article> = articleRepository.findById(articleId)
 
-    fun listByBoard(boardId: String): Flux<Article> = articleRepository.findByBoardId(boardId)
+    fun listByBoard(boardId: String): Flux<Article> = articleRepository.findByBoards(boardId)
 
     fun listByCafe(cafeId: String): Flux<Article> {
         val boardIds = boardRepository.findByCafeId(cafeId)
@@ -28,16 +28,16 @@ class ArticleService(
             .orElse(Collections.emptyList())
             .toList()
 
-        return articleRepository.findByBoardIdIn(boardIds)
+        return articleRepository.findByBoardsIn(boardIds)
     }
 
     fun create(articleDto: ArticleDto): Mono<Article> =
-        articleRepository.save(Article(UUID.randomUUID().toString(), articleDto.boardId, articleDto.title, articleDto.body))
+        articleRepository.save(Article(UUID.randomUUID().toString(), articleDto.boards, articleDto.title, articleDto.body))
 
     fun update(articleDto: ArticleDto): Mono<Article> =
         articleRepository.findById(articleDto.id)
             .flatMap { article ->
-                articleRepository.save(Article(article.id, articleDto.boardId, articleDto.title, articleDto.body))
+                articleRepository.save(Article(article.id, articleDto.boards, articleDto.title, articleDto.body))
             }
             .switchIfEmpty(Mono.error(DataNotFoundException("Article(id=${articleDto.id}) not found")))
 }

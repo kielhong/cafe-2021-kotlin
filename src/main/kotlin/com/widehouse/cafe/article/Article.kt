@@ -9,7 +9,7 @@ data class Article(
     @Id
     val id: String,
     @Indexed
-    val boardId: String,
+    val boards: List<String>,
     val title: String,
     val body: String
 )

@@ -12,13 +12,13 @@ internal class ArticleRepositoryTest @Autowired constructor(
     private val articleRepository: ArticleRepository
 ) {
     @Test
-    fun testFindByBoardId() {
+    fun testFindByBoards() {
         // given
         val boardId = "boardId"
-        val article1 = articleRepository.save(Article("1", boardId, "title1", "body1")).block()
-        val article2 = articleRepository.save(Article("2", boardId, "title2", "body2")).block()
+        val article1 = articleRepository.save(Article("1", listOf(boardId), "title1", "body1")).block()
+        val article2 = articleRepository.save(Article("2", listOf(boardId), "title2", "body2")).block()
         // when
-        val result = articleRepository.findByBoardId(boardId)
+        val result = articleRepository.findByBoards(boardId)
         // then
         StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(article1) }
@@ -27,12 +27,12 @@ internal class ArticleRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun testFindBoardIdIn() {
+    fun testFindBoardsIn() {
         // given
-        val article1 = articleRepository.save(Article("1", "boardId1", "title1", "body1")).block()
-        val article2 = articleRepository.save(Article("2", "boardId2", "title1", "body1")).block()
+        val article1 = articleRepository.save(Article("1", listOf("boardId1"), "title1", "body1")).block()
+        val article2 = articleRepository.save(Article("2", listOf("boardId2"), "title1", "body1")).block()
         // when
-        val result = articleRepository.findByBoardIdIn(listOf("boardId1", "boardId2"))
+        val result = articleRepository.findByBoardsIn(listOf("boardId1", "boardId2"))
         // then
         StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(article1) }

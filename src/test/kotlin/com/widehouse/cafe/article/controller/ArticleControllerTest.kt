@@ -76,8 +76,8 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
             given(articleService.listByBoard(board.id))
                 .willReturn(
                     Flux.just(
-                        Article("1", board.id, "title1", "body1"),
-                        Article("2", board.id, "title2", "body2")
+                        Article("1", listOf(board.id), "title1", "body1"),
+                        Article("2", listOf(board.id), "title2", "body2")
                     )
                 )
             // when
@@ -97,7 +97,12 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
         fun `list article by Cafe`() {
             // given
             given(articleService.listByCafe(cafe.id))
-                .willReturn(Flux.just(Article("1", "board1", "title1", "body1"), Article("2", "board2", "ttle2", "body2")))
+                .willReturn(
+                    Flux.just(
+                        Article("1", listOf("board1"), "title1", "body1"),
+                        Article("2", listOf("board2"), "title2", "body2")
+                    )
+                )
             // when
             webClient.get()
                 .uri("/article?cafeId={cafeId}", cafe.id)
@@ -112,8 +117,8 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
         @Test
         fun `create article then ok`() {
             // given
-            val request = ArticleDto(boardId = "board", title = "title", body = "body")
-            val article = Article("articleId", request.boardId, request.title, request.body)
+            val request = ArticleDto(boards = listOf("board"), title = "title", body = "body")
+            val article = Article("articleId", request.boards, request.title, request.body)
             given(articleService.create(request)).willReturn(Mono.just(article))
             // when
             webClient.post()
@@ -131,13 +136,13 @@ internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
     @DisplayName("Update Article")
     inner class UpdateArticle {
         private val article = ArticleFixtures.create()
-        private val request = ArticleDto(article.id, "newBoardId", "newTitle", "newBody")
+        private val request = ArticleDto(article.id, listOf("newBoardId"), "newTitle", "newBody")
 
         @Test
         fun `exist article then update ok`() {
             // given
             given(articleService.update(request))
-                .willReturn(Mono.just(Article(article.id, request.boardId, request.title, request.body)))
+                .willReturn(Mono.just(Article(article.id, request.boards, request.title, request.body)))
             // when
             webClient.put()
                 .uri("/article")
