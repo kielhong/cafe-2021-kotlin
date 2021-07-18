@@ -21,7 +21,7 @@ object Versions {
 }
 
 buildscript {
-    extra.apply{
+    extra.apply {
         set("kotestVersion", "4.6.1")
     }
 }
