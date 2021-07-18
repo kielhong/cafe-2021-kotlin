@@ -40,8 +40,8 @@ internal class ArticleServiceTest {
         service = ArticleService(articleRepository, boardRepository)
 
         boardId = "board"
-        article1 = Article("1234", boardId, "title1", "body1")
-        article2 = Article("abcd", boardId, "title2", "body2")
+        article1 = Article("1234", listOf(boardId), "title1", "body1")
+        article2 = Article("abcd", listOf(boardId), "title2", "body2")
     }
 
     @Test
@@ -59,7 +59,7 @@ internal class ArticleServiceTest {
     @Test
     fun `boardId 가 주어지면 boardId에 연결된 모든 article목록을 반환`() {
         // given
-        given(articleRepository.findByBoardId(anyString())).willReturn(Flux.just(article1, article2))
+        given(articleRepository.findByBoards(anyString())).willReturn(Flux.just(article1, article2))
         // when
         val result = service.listByBoard(boardId)
         // then
@@ -74,7 +74,7 @@ internal class ArticleServiceTest {
         // given
         val cafeUrl = "url"
         given(boardRepository.findByCafeId(anyString())).willReturn(Flux.just(Board("1", cafeUrl), Board("2", cafeUrl)))
-        given(articleRepository.findByBoardIdIn(anyList())).willReturn(Flux.just(article1, article2))
+        given(articleRepository.findByBoardsIn(anyList())).willReturn(Flux.just(article1, article2))
         // when
         val result = service.listByCafe(cafeUrl)
         // then
@@ -87,8 +87,8 @@ internal class ArticleServiceTest {
     @Test
     fun `article 생성`() {
         // given
-        val request = ArticleDto(boardId = "boardId", title = "title", body = "body")
-        val article = Article("id", request.boardId, request.title, request.body)
+        val request = ArticleDto(boards = listOf("boardId"), title = "title", body = "body")
+        val article = Article("id", request.boards, request.title, request.body)
         given(articleRepository.save(any(Article::class.java)))
             .willReturn(Mono.just(article))
         // when
@@ -103,12 +103,12 @@ internal class ArticleServiceTest {
     @DisplayName("Article 변경")
     inner class UpdateArticle {
         private val article = ArticleFixtures.create()
-        private val request = ArticleDto(article.id, "newBoardId", "newTitle", "newBody")
+        private val request = ArticleDto(article.id, listOf("newBoardId"), "newTitle", "newBody")
 
         @Test
         fun `존재하는 article이면 변경된 article 반환`() {
             // given
-            val updatedArticle = Article(article.id, request.boardId, request.title, request.body)
+            val updatedArticle = Article(article.id, request.boards, request.title, request.body)
             given(articleRepository.findById(request.id)).willReturn(Mono.just(article))
             given(articleRepository.save(any(Article::class.java))).willReturn((Mono.just(updatedArticle)))
             // when
