@@ -16,6 +16,16 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version ktlintVersion
 }
 
+object Versions {
+    const val kotestVersion = "4.6.1"
+}
+
+buildscript {
+    extra.apply{
+        set("kotestVersion", "4.6.1")
+    }
+}
+
 group = "com.widehouse"
 version = "0.0.1-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
@@ -37,6 +47,9 @@ dependencies {
     implementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
 
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.kotest:kotest-runner-junit5:${Versions.kotestVersion}")
+    testImplementation("io.kotest:kotest-assertions-core:${Versions.kotestVersion}")
+    testImplementation("io.kotest:kotest-property:${Versions.kotestVersion}")
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
     testImplementation("io.projectreactor:reactor-test")
 }
