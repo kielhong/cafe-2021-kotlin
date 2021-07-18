@@ -8,5 +8,6 @@ class ArticleTest : StringSpec({
     "Article should be created" {
         val article = Article("id", "boardId", "title", "body")
         article.id shouldBe "id"
+        article.boardId shouldBe "boardId"
     }
 })
