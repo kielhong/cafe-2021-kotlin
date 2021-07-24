@@ -18,12 +18,7 @@ plugins {
 
 object Versions {
     const val kotestVersion = "4.6.1"
-}
-
-buildscript {
-    extra.apply {
-        set("kotestVersion", "4.6.1")
-    }
+    const val mockkVersion = "1.12.0"
 }
 
 group = "com.widehouse"
@@ -50,6 +45,7 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:${Versions.kotestVersion}")
     testImplementation("io.kotest:kotest-assertions-core:${Versions.kotestVersion}")
     testImplementation("io.kotest:kotest-property:${Versions.kotestVersion}")
+    testImplementation("io.mockk:mockk:${Versions.mockkVersion}")
     testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
     testImplementation("io.projectreactor:reactor-test")
 }

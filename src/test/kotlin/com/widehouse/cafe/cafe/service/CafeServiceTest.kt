@@ -6,6 +6,7 @@ import com.widehouse.cafe.cafe.repository.CafeRepository
 import com.widehouse.cafe.common.exception.AlreadyExistException
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -14,6 +15,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.junit.jupiter.MockitoExtension
 import org.springframework.dao.DuplicateKeyException
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
@@ -67,6 +69,26 @@ internal class CafeServiceTest {
             StepVerifier.create(result)
                 .expectError(AlreadyExistException::class.java)
                 .verify()
+        }
+    }
+
+    @Nested
+    @DisplayName("Cafe list by theme")
+    inner class CafeListByTheme {
+        @Test
+        fun give_theme_when_listByTheme_then_listFluxCafe() {
+            // given
+            val theme = "movie"
+            val cafe1 = CafeFixtures.create("1", "name1", "desc1", theme)
+            val cafe2 = CafeFixtures.create("2", "name2", "desc2", theme)
+            given(cafeRepository.findByTheme(theme)).willReturn(Flux.just(cafe1, cafe2))
+            // when
+            val result = service.listByTheme(theme)
+            // then
+            StepVerifier.create(result)
+                .assertNext { then(it).isEqualTo(cafe1) }
+                .assertNext { then(it).isEqualTo(cafe2) }
+                .verifyComplete()
         }
     }
 }
