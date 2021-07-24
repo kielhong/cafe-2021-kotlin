@@ -1,16 +1,14 @@
 package com.widehouse.cafe.cafe.model
 
-import org.assertj.core.api.BDDAssertions.then
-import org.junit.jupiter.api.Test
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 
-internal class CafeTest {
-    @Test
-    fun testConstruction() {
-        val cafe = Cafe("test", "name", "desc")
-        // then
-        then(cafe)
-            .hasFieldOrPropertyWithValue("id", "test")
-            .hasFieldOrPropertyWithValue("name", "name")
-            .hasFieldOrPropertyWithValue("description", "desc")
+internal class CafeTest : StringSpec({
+    "construct Cafe" {
+        val cafe = Cafe("test", "name", "desc", theme = "movie")
+        cafe.id shouldBe "test"
+        cafe.name shouldBe "name"
+        cafe.description shouldBe "desc"
+        cafe.theme shouldBe "movie"
     }
-}
+})

@@ -24,7 +24,7 @@ internal class CafeRepositoryTest @Autowired constructor(
     @Test
     fun when_findByUrl_then_returnMonoCafe() {
         // given
-        val cafe = template.save(Cafe("test", "name", "desc")).block()
+        val cafe = template.save(Cafe("test", "name", "desc", "theme")).block()
         // when
         val result = cafeRepository.findById(cafe!!.id)
         // then
@@ -45,5 +45,20 @@ internal class CafeRepositoryTest @Autowired constructor(
         StepVerifier.create(result)
             .expectError(DuplicateKeyException::class.java)
             .verify()
+    }
+
+    @Test
+    fun given_theme_when_listByTheme_then_listFlux() {
+        // given
+        val theme = "movie"
+        template.save(CafeFixtures.create("1", "name1", "desc1", theme)).block()
+        template.save(CafeFixtures.create("2", "name2", "desc2", theme)).block()
+        // when
+        val result = cafeRepository.findByTheme(theme)
+        // then
+        StepVerifier.create(result)
+            .assertNext { then(it.theme).isEqualTo(theme) }
+            .assertNext { then(it.theme).isEqualTo(theme) }
+            .verifyComplete()
     }
 }

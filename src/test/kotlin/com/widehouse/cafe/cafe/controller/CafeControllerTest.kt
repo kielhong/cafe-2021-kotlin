@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @WebFluxTest(CafeController::class)
@@ -72,6 +73,23 @@ internal class CafeControllerTest(@Autowired val webClient: WebTestClient) {
                 .body(BodyInserters.fromValue(cafe))
                 .exchange()
                 .expectStatus().isEqualTo(HttpStatus.CONFLICT)
+        }
+    }
+
+    @Nested
+    @DisplayName("Theme 별 Cafe")
+    inner class CafeByTheme {
+        @Test
+        fun give_theme_then_listCafe() {
+            // given
+            val cafe1 = CafeFixtures.create("1", "name1", "desc1", "movie")
+            val cafe2 = CafeFixtures.create("2", "name2", "desc2", "movie")
+            given(cafeService.listByTheme("movie")).willReturn(Flux.just(cafe1, cafe2))
+            // when
+            webClient.get()
+                .uri("/cafe?theme=movie")
+                .exchange()
+                .expectStatus().isOk
         }
     }
 }
