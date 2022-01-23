@@ -1,8 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    val kotlinVersion = "1.5.10"
-    val springVersion = "2.5.1"
+    val kotlinVersion = "1.6.10"
+    val springVersion = "2.6.3"
     val dependencyVersion = "1.0.11.RELEASE"
     val ktlintVersion = "10.0.0"
 
@@ -22,7 +22,7 @@ object Versions {
 }
 
 group = "com.widehouse"
-version = "0.0.1-SNAPSHOT"
+version = "1.0.0-SNAPSHOT"
 java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
