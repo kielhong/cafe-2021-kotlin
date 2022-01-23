@@ -1,24 +1,16 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    val kotlinVersion = "1.6.10"
-    val springVersion = "2.6.3"
-    val dependencyVersion = "1.0.11.RELEASE"
-    val ktlintVersion = "10.0.0"
+    id(Libs.Plugins.spring) version Libs.Versions.spring
+    id(Libs.Plugins.dependencyManagement) version Libs.Versions.dependency
 
-    id("org.springframework.boot") version springVersion
-    id("io.spring.dependency-management") version dependencyVersion
-    kotlin("jvm") version kotlinVersion
-    kotlin("plugin.spring") version kotlinVersion
-    kotlin("plugin.jpa") version kotlinVersion
+    id(Libs.Plugins.kotlinJvm) version Libs.Versions.kotlin
+    kotlin("plugin.spring") version Libs.Versions.kotlin
+    kotlin("plugin.jpa") version Libs.Versions.kotlin
+
     jacoco
     `java-test-fixtures`
-    id("org.jlleitschuh.gradle.ktlint") version ktlintVersion
-}
-
-object Versions {
-    const val kotestVersion = "4.6.1"
-    const val mockkVersion = "1.12.0"
+    id(Libs.Plugins.ktlint) version Libs.Versions.ktlint
 }
 
 group = "com.widehouse"
@@ -41,13 +33,12 @@ dependencies {
     // TODO : only local profiles
     implementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.kotest:kotest-runner-junit5:${Versions.kotestVersion}")
-    testImplementation("io.kotest:kotest-assertions-core:${Versions.kotestVersion}")
-    testImplementation("io.kotest:kotest-property:${Versions.kotestVersion}")
-    testImplementation("io.mockk:mockk:${Versions.mockkVersion}")
-    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
-    testImplementation("io.projectreactor:reactor-test")
+    testImplementation(Libs.Test.springTest)
+    testImplementation(Libs.Test.reactorTest)
+    testImplementation(Libs.Test.kotest)
+    testImplementation(Libs.Test.kotestAssertionsCore)
+    testImplementation(Libs.Test.kotestProperty)
+    testImplementation(Libs.Test.mockk)
 }
 
 tasks.withType<KotlinCompile> {
@@ -57,7 +48,7 @@ tasks.withType<KotlinCompile> {
     }
 }
 
-tasks.test {
+tasks.withType<Test> {
     useJUnitPlatform()
     finalizedBy(tasks.jacocoTestReport)
 }

@@ -1,3 +1,6 @@
 spring:
   main:
     banner-mode: 'off'
+  mongodb:
+    embedded:
+      version: '3.3.1'
