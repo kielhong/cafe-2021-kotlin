@@ -1,11 +1,10 @@
 package com.widehouse.cafe.comment.model
 
-import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.index.Indexed
-import org.springframework.data.mongodb.core.mapping.Document
+import java.time.ZonedDateTime
 
-@Document(collection = "comment")
 class Comment(
-    @Id val id: String,
-    @Indexed val articleId: String
+    val id: String,
+    val articleId: String,
+    val body: String,
+    val createdAt: ZonedDateTime
 )

@@ -1,7 +1,7 @@
 package com.widehouse.cafe.comment.controller
 
 import com.widehouse.cafe.comment.CommentFixtures
-import com.widehouse.cafe.comment.service.CommentService
+import com.widehouse.cafe.comment.usecase.CommentQueryUseCase
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
@@ -15,7 +15,7 @@ import java.util.UUID
 @WebFluxTest(CommentController::class)
 class CommentControllerTest(@Autowired val webClient: WebTestClient) {
     @MockBean
-    private lateinit var commentService: CommentService
+    private lateinit var commentQueryUseCase: CommentQueryUseCase
 
     private lateinit var articleId: String
 
@@ -29,7 +29,7 @@ class CommentControllerTest(@Autowired val webClient: WebTestClient) {
         // given
         val comment1 = CommentFixtures.create(UUID.randomUUID().toString())
         val comment2 = CommentFixtures.create(UUID.randomUUID().toString())
-        given(commentService.listComment(articleId)).willReturn(Flux.just(comment1, comment2))
+        given(commentQueryUseCase.listComments(articleId)).willReturn(Flux.just(comment1, comment2))
         // when
         webClient.get()
             .uri("/article/{articleId}/comment", articleId)

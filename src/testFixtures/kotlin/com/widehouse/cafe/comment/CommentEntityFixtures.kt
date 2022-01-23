@@ -1,13 +1,13 @@
 package com.widehouse.cafe.comment
 
-import com.widehouse.cafe.comment.model.Comment
+import com.widehouse.cafe.comment.repository.CommentEntity
 import java.time.ZonedDateTime.now
 import java.util.UUID
 
-class CommentFixtures {
+class CommentEntityFixtures {
     companion object {
         @JvmStatic
-        fun create(id: String, articleId: String) = Comment(id, articleId, id + articleId, now())
+        fun create(id: String, articleId: String) = CommentEntity(id, articleId, id + articleId, now())
         @JvmStatic
         fun create(articleId: String) = create(UUID.randomUUID().toString(), articleId)
     }

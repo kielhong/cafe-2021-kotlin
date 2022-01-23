@@ -1,6 +1,6 @@
 package com.widehouse.cafe.comment.service
 
-import com.widehouse.cafe.comment.CommentFixtures
+import com.widehouse.cafe.comment.CommentEntityFixtures.Companion.create
 import com.widehouse.cafe.comment.repository.CommentRepository
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
@@ -13,34 +13,34 @@ import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 import java.util.UUID
 
+// TODO : kotest 전환
 @ExtendWith(MockitoExtension::class)
-internal class CommentServiceTest {
-    private lateinit var service: CommentService
+internal class CommentQueryServiceTest {
+    private lateinit var service: CommentQueryService
     @Mock
     private lateinit var commentRepository: CommentRepository
 
-    private lateinit var articleId: String
+    private val articleId = UUID.randomUUID().toString()
+    private val comment1 = create(articleId)
+    private val comment2 = create(articleId)
 
     @BeforeEach
     internal fun setUp() {
-        service = CommentService(commentRepository)
-
-        articleId = UUID.randomUUID().toString()
+        service = CommentQueryService(commentRepository)
     }
 
     @Test
     internal fun `articleId 가 주어지면 해당 게시물에 딸린 댓글 목록을 반환`() {
         // given
-        val comment1 = CommentFixtures.create(articleId)
-        val comment2 = CommentFixtures.create(articleId)
-        given(commentRepository.findByArticleId(articleId)).willReturn(Flux.just(comment1, comment2))
+        given(commentRepository.findByArticleId(articleId))
+            .willReturn(Flux.just(comment1, comment2))
         // when
-        val result = service.listComment(articleId)
+        val result = service.listComments(articleId)
         // then
         StepVerifier
             .create(result)
-            .assertNext { then(it).isEqualTo(comment1) }
-            .assertNext { then(it).isEqualTo(comment2) }
+            .assertNext { then(it.id).isEqualTo(comment1.id) }
+            .assertNext { then(it.id).isEqualTo(comment2.id) }
             .expectComplete()
             .verify()
     }

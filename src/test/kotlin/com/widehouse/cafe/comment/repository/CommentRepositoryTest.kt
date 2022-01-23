@@ -1,23 +1,28 @@
 package com.widehouse.cafe.comment.repository
 
-import com.widehouse.cafe.comment.model.Comment
+import com.widehouse.cafe.common.config.MongoConfig
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
+import org.springframework.context.annotation.Import
 import reactor.test.StepVerifier
+import java.time.ZonedDateTime.now
 import java.util.UUID
 
+@Suppress("NonAsciiCharacters")
 @DataMongoTest
+@Import(MongoConfig::class)
 class CommentRepositoryTest @Autowired constructor(
     private val commentRepository: CommentRepository
 ) {
+    private val articleId = UUID.randomUUID().toString()
+
     @Test
-    internal fun `articleId 가 주어지면 관련된 comment Flux 반환`() {
-        val articleId = UUID.randomUUID().toString()
+    fun `articleId 가 주어지면 관련된 comment Flux 반환`() {
         // given
-        commentRepository.save(Comment("1", articleId)).block()
-        commentRepository.save(Comment("2", articleId)).block()
+        commentRepository.save(CommentEntity("1", articleId, "test", now())).block()
+        commentRepository.save(CommentEntity("2", articleId, "test", now())).block()
         // when
         val result = commentRepository.findByArticleId(articleId)
         // then
