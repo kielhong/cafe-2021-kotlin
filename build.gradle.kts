@@ -1,16 +1,16 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id(Libs.Plugins.spring) version Libs.Versions.spring
-    id(Libs.Plugins.dependencyManagement) version Libs.Versions.dependency
-
-    id(Libs.Plugins.kotlinJvm) version Libs.Versions.kotlin
-    kotlin("plugin.spring") version Libs.Versions.kotlin
-    kotlin("plugin.jpa") version Libs.Versions.kotlin
-
     jacoco
     `java-test-fixtures`
+
+    id(Libs.Plugins.spring) version Libs.Versions.spring
+    id(Libs.Plugins.dependencyManagement) version Libs.Versions.dependency
     id(Libs.Plugins.ktlint) version Libs.Versions.ktlint
+    id(Libs.Plugins.ktlintIdea) version Libs.Versions.ktlint
+    kotlin("jvm") version Libs.Versions.kotlin
+    kotlin("plugin.spring") version Libs.Versions.kotlin
+    kotlin("plugin.jpa") version Libs.Versions.kotlin
 }
 
 group = "com.widehouse"
@@ -22,16 +22,17 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    implementation(Libs.webflux)
+    implementation(Libs.validation)
+    implementation(Libs.dataMongoReactive)
+
+    implementation(Libs.jacksonKotlin)
+    implementation(Libs.reactorKotlin)
+    implementation(Libs.kotlinReflect)
+    implementation(Libs.kotlinJdk8)
+    implementation(Libs.reactorKotlin)
     // TODO : only local profiles
-    implementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo")
+    implementation(Libs.embeddedMongo)
 
     testImplementation(Libs.Test.springTest)
     testImplementation(Libs.Test.reactorTest)
@@ -50,10 +51,11 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
-    finalizedBy(tasks.jacocoTestReport)
 }
 
 tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
     classDirectories.setFrom(
         files(
             classDirectories.files.map {

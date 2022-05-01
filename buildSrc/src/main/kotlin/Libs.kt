@@ -2,14 +2,13 @@ object Libs {
     object Plugins {
         const val spring = "org.springframework.boot"
         const val dependencyManagement = "io.spring.dependency-management"
-        const val kotlinJvm = "org.jetbrains.kotlin.jvm"
         const val ktlint = "org.jlleitschuh.gradle.ktlint"
         const val ktlintIdea = "org.jlleitschuh.gradle.ktlint-idea"
         const val jacocoBadge = "com.github.dawnwords.jacoco.badge"
     }
 
     object Versions {
-        const val spring = "2.6.3"
+        const val spring = "2.6.6"
         const val dependency = "1.0.11.RELEASE"
         const val kotlin = "1.6.10"
         const val kotest = "4.6.2"
@@ -27,4 +26,14 @@ object Libs {
         const val kotestProperty = "io.kotest:kotest-property:${Versions.kotest}"
         const val mockk = "io.mockk:mockk:${Versions.mockk}"
     }
+
+    const val dataMongoReactive = "org.springframework.boot:spring-boot-starter-data-mongodb-reactive"
+    const val validation = "org.springframework.boot:spring-boot-starter-validation"
+    const val webflux = "org.springframework.boot:spring-boot-starter-webflux"
+    const val jacksonKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin"
+    const val reactorKotlin = "io.projectreactor.kotlin:reactor-kotlin-extensions"
+    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect"
+    const val kotlinJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    const val coroutineReactor = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor"
+    const val embeddedMongo = "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
 }
