@@ -42,7 +42,9 @@ dependencies {
     testImplementation(Libs.Test.kotest)
     testImplementation(Libs.Test.kotestAssertionsCore)
     testImplementation(Libs.Test.kotestProperty)
+    testImplementation(Libs.Test.kotestExtensionsSpring)
     testImplementation(Libs.Test.mockk)
+    testImplementation(Libs.Test.springMockk)
 }
 
 tasks.withType<KotlinCompile> {

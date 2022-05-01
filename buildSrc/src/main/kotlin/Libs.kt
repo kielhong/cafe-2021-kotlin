@@ -12,10 +12,12 @@ object Libs {
         const val dependency = "1.0.11.RELEASE"
         const val kotlin = "1.6.10"
         const val kotest = "4.6.2"
+        const val kotestExtension = "4.4.3"
         const val mockk = "1.12.0"
         const val ktlint = "10.2.0"
         const val jacoco = "0.8.7"
         const val jacocoBadge = "0.2.4"
+        const val springMockk = "3.1.1"
     }
 
     object Test {
@@ -24,7 +26,9 @@ object Libs {
         const val kotest = "io.kotest:kotest-runner-junit5:${Versions.kotest}"
         const val kotestAssertionsCore = "io.kotest:kotest-assertions-core:${Versions.kotest}"
         const val kotestProperty = "io.kotest:kotest-property:${Versions.kotest}"
+        const val kotestExtensionsSpring = "io.kotest:kotest-extensions-spring:${Versions.kotestExtension}"
         const val mockk = "io.mockk:mockk:${Versions.mockk}"
+        const val springMockk = "com.ninja-squad:springmockk:${Versions.springMockk}"
     }
 
     const val springBootDataMongoReactive = "org.springframework.boot:spring-boot-starter-data-mongodb-reactive"

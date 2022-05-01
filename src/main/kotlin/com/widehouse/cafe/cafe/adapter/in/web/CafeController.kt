@@ -1,6 +1,7 @@
 package com.widehouse.cafe.cafe.adapter.`in`.web
 
-import com.widehouse.cafe.cafe.application.CafeService
+import com.widehouse.cafe.cafe.application.port.`in`.CafeCreateUseCase
+import com.widehouse.cafe.cafe.application.port.`in`.CafeQueryUseCase
 import com.widehouse.cafe.cafe.domain.Cafe
 import com.widehouse.cafe.common.exception.AlreadyExistException
 import org.springframework.http.HttpStatus
@@ -18,17 +19,22 @@ import reactor.core.publisher.Mono
 
 @RestController
 @RequestMapping("cafe")
-class CafeController(private val cafeService: CafeService) {
+class CafeController(
+    private val cafeQueryUseCase: CafeQueryUseCase,
+    private val cafeCreateUseCase: CafeCreateUseCase
+) {
     @PostMapping
     fun createCafe(@RequestBody cafe: Cafe): Mono<Cafe> {
-        return cafeService.create(cafe)
+        return cafeCreateUseCase.create(cafe)
     }
 
     @GetMapping("{url}")
-    fun getCafe(@PathVariable url: String): Mono<Cafe> = cafeService.getCafe(url)
+    fun getCafe(@PathVariable url: String): Mono<Cafe> =
+        cafeQueryUseCase.getCafe(url)
 
     @GetMapping(params = ["theme"])
-    fun listCafeByTheme(@RequestParam theme: String): Flux<Cafe> = cafeService.listByTheme(theme)
+    fun listCafeByTheme(@RequestParam theme: String): Flux<Cafe> =
+        cafeQueryUseCase.listByTheme(theme)
 
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ExceptionHandler
