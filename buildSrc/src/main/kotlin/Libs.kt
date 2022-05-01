@@ -27,13 +27,13 @@ object Libs {
         const val mockk = "io.mockk:mockk:${Versions.mockk}"
     }
 
-    const val dataMongoReactive = "org.springframework.boot:spring-boot-starter-data-mongodb-reactive"
-    const val validation = "org.springframework.boot:spring-boot-starter-validation"
-    const val webflux = "org.springframework.boot:spring-boot-starter-webflux"
+    const val springBootDataMongoReactive = "org.springframework.boot:spring-boot-starter-data-mongodb-reactive"
+    const val springBootValidation = "org.springframework.boot:spring-boot-starter-validation"
+    const val springBootWebflux = "org.springframework.boot:spring-boot-starter-webflux"
     const val jacksonKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin"
     const val reactorKotlin = "io.projectreactor.kotlin:reactor-kotlin-extensions"
     const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect"
     const val kotlinJdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
-    const val coroutineReactor = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor"
+    const val kotlinCoroutineReactor = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor"
     const val embeddedMongo = "de.flapdoodle.embed:de.flapdoodle.embed.mongo"
 }

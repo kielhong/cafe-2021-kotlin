@@ -15,22 +15,25 @@ plugins {
 
 group = "com.widehouse"
 version = "1.0.0-SNAPSHOT"
-java.sourceCompatibility = JavaVersion.VERSION_11
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    implementation(Libs.webflux)
-    implementation(Libs.validation)
-    implementation(Libs.dataMongoReactive)
+    implementation(Libs.springBootWebflux)
+    implementation(Libs.springBootValidation)
+    implementation(Libs.springBootDataMongoReactive)
 
     implementation(Libs.jacksonKotlin)
     implementation(Libs.reactorKotlin)
     implementation(Libs.kotlinReflect)
     implementation(Libs.kotlinJdk8)
-    implementation(Libs.reactorKotlin)
+    implementation(Libs.kotlinCoroutineReactor)
     // TODO : only local profiles
     implementation(Libs.embeddedMongo)
 
