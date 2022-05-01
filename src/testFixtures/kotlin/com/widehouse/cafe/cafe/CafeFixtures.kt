@@ -1,6 +1,6 @@
 package com.widehouse.cafe.cafe
 
-import com.widehouse.cafe.cafe.model.Cafe
+import com.widehouse.cafe.cafe.domain.Cafe
 
 class CafeFixtures {
     companion object {

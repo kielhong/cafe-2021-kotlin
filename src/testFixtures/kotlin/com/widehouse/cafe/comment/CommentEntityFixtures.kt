@@ -1,6 +1,6 @@
 package com.widehouse.cafe.comment
 
-import com.widehouse.cafe.comment.repository.CommentEntity
+import com.widehouse.cafe.comment.adapter.out.persistence.CommentEntity
 import java.time.ZonedDateTime.now
 import java.util.UUID
 
