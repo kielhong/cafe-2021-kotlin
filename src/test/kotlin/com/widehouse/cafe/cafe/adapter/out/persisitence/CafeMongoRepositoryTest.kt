@@ -12,9 +12,9 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import reactor.test.StepVerifier
 
 @DataMongoTest
-internal class CafeRepositoryTest @Autowired constructor(
+internal class CafeMongoRepositoryTest @Autowired constructor(
     private val template: ReactiveMongoTemplate,
-    private val cafeRepository: CafeRepository
+    private val cafeMongoRepository: CafeMongoRepository
 ) {
     @AfterEach
     internal fun tearDown() {
@@ -26,7 +26,7 @@ internal class CafeRepositoryTest @Autowired constructor(
         // given
         val cafe = template.save(Cafe("test", "name", "desc", "theme")).block()
         // when
-        val result = cafeRepository.findById(cafe!!.id)
+        val result = cafeMongoRepository.findById(cafe!!.id)
         // then
         StepVerifier
             .create(result)
@@ -40,7 +40,7 @@ internal class CafeRepositoryTest @Autowired constructor(
         val cafe = CafeFixtures.create()
         template.save(cafe).block()
         // when
-        val result = cafeRepository.insert(cafe)
+        val result = cafeMongoRepository.insert(cafe)
         // then
         StepVerifier.create(result)
             .expectError(DuplicateKeyException::class.java)
@@ -54,7 +54,7 @@ internal class CafeRepositoryTest @Autowired constructor(
         template.save(CafeFixtures.create("1", "name1", "desc1", theme)).block()
         template.save(CafeFixtures.create("2", "name2", "desc2", theme)).block()
         // when
-        val result = cafeRepository.findByTheme(theme)
+        val result = cafeMongoRepository.findByTheme(theme)
         // then
         StepVerifier.create(result)
             .assertNext { then(it.theme).isEqualTo(theme) }
