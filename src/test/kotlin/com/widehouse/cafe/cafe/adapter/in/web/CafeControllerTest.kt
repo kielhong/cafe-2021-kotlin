@@ -30,6 +30,7 @@ internal class CafeControllerTest : DescribeSpec({
 
     @MockkBean
     private lateinit var cafeQueryUseCase: CafeQueryUseCase
+
     @MockkBean
     private lateinit var cafeCreateUseCase: CafeCreateUseCase
 
@@ -71,7 +72,7 @@ internal class CafeControllerTest : DescribeSpec({
             context("cafeService create with already exist id") {
                 val cafe = CafeFixtures.create()
                 every { cafeCreateUseCase.create(cafe) } returns Mono.error(AlreadyExistException(cafe.id))
-                it("should 409 conflice") {
+                it("should 409 conflict") {
                     webClient.post()
                         .uri("/cafe")
                         .contentType(MediaType.APPLICATION_JSON)
