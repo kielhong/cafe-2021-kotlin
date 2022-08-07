@@ -1,5 +1,6 @@
 package com.widehouse.cafe.cafe.adapter.out.persisitence
 
+import com.widehouse.cafe.cafe.domain.Category
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.mockk.every
@@ -27,7 +28,8 @@ class CategoryPersistenceAdapterTest : DescribeSpec({
             it("should list all categories") {
                 adapter.loadAllCategory()
                     .`as`(StepVerifier::create)
-                    .expectNextCount(2)
+                    .expectNextMatches { it.id == 1L && it.name == "name1" }
+                    .expectNextCount(1)
                     .verifyComplete()
 
                 verify { categoryMongoRepository.findAll() }
