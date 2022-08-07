@@ -1,6 +1,5 @@
 package com.widehouse.cafe.cafe.adapter.out.persisitence
 
-import com.widehouse.cafe.cafe.domain.Category
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.mockk.every
