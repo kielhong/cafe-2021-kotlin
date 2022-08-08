@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono
 
 interface CafeQueryUseCase {
     fun getCafe(id: String): Mono<Cafe>
-    fun listByTheme(theme: String): Flux<Cafe>
+    fun listByCategory(categoryId: Long): Flux<Cafe>
 }

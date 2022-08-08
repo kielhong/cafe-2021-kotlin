@@ -38,12 +38,12 @@ internal class CafeServiceTest : DescribeSpec({
 
     describe("Cafe list by theme") {
         context("cafeRepository listByTheme listFluxCafe") {
-            val theme = "movie"
-            val cafe1 = CafeFixtures.create("1", "name1", "desc1", theme)
-            val cafe2 = CafeFixtures.create("2", "name2", "desc2", theme)
-            every { cafeRepository.loadCafeByTheme(any()) } returns Flux.just(cafe1, cafe2)
+            val categoryId = 1L
+            val cafe1 = CafeFixtures.create("1", "name1", "desc1", categoryId)
+            val cafe2 = CafeFixtures.create("2", "name2", "desc2", categoryId)
+            every { cafeRepository.loadCafeByCategory(any()) } returns Flux.just(cafe1, cafe2)
             it("should be flux of cafes") {
-                service.listByTheme(theme)
+                service.listByCategory(categoryId)
                     .`as`(StepVerifier::create)
                     .assertNext { it shouldBe cafe1 }
                     .assertNext { it shouldBe cafe2 }

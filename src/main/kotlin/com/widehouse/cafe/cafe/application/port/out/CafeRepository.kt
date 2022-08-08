@@ -6,6 +6,6 @@ import reactor.core.publisher.Mono
 
 interface CafeRepository {
     fun loadCafe(id: String): Mono<Cafe>
-    fun loadCafeByTheme(theme: String): Flux<Cafe>
+    fun loadCafeByCategory(categoryId: Long): Flux<Cafe>
     fun createCafe(cafe: Cafe): Mono<Cafe>
 }

@@ -33,13 +33,13 @@ internal class CafePersistenceAdapterTest : DescribeSpec({
 
     describe("CafePersistenceAdapter load cafe by theme") {
         context("repository findByTheme returns cafes") {
-            val theme = "theme"
+            val categoryId = 1L
             val cafe1 = CafeFixtures.create("1")
             val cafe2 = CafeFixtures.create("2")
-            every { cafeMongoRepository.findByTheme(theme) } returns Flux.just(cafe1, cafe2)
+            every { cafeMongoRepository.findByCategoryId(categoryId) } returns Flux.just(cafe1, cafe2)
 
             it("should be list cafe of theme") {
-                adapter.loadCafeByTheme(theme)
+                adapter.loadCafeByCategory(categoryId)
                     .`as`(StepVerifier::create)
                     .assertNext { it shouldBe cafe1 }
                     .assertNext { it shouldBe cafe2 }

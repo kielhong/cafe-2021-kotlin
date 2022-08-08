@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.ReactiveMongoRepository
 import reactor.core.publisher.Flux
 
 interface CafeMongoRepository : ReactiveMongoRepository<Cafe, String> {
-    fun findByTheme(theme: String): Flux<Cafe>
+    fun findByCategoryId(categoryId: Long): Flux<Cafe>
 }

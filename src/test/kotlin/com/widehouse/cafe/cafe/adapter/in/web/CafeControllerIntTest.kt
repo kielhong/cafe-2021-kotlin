@@ -15,14 +15,18 @@ class CafeControllerIntTest(
     @Autowired val template: ReactiveMongoTemplate
 ) {
     @Test
-    fun given_theme_then_listByTheme() {
+    fun given_categoryId_then_listByCategory() {
         // when
-        val theme = "video"
-        template.save(Cafe("1", "name1", "desc1", theme)).block()
-        template.save(Cafe("2", "name2", "desc3", theme)).block()
+        val categoryId = 1L
+        template.save(Cafe("1", "name1", "desc1", categoryId)).block()
+        template.save(Cafe("2", "name2", "desc3", categoryId)).block()
         // then
         webClient.get()
-            .uri("/cafe?theme={theme}", theme)
+            .uri {
+                it.path("/cafe")
+                    .queryParam("categoryId", categoryId)
+                    .build()
+            }
             .exchange()
             .expectStatus().isOk
             .expectBody()

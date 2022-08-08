@@ -10,5 +10,5 @@ data class Cafe(
     val name: String,
     val description: String,
     @Indexed
-    val theme: String
+    val categoryId: Long
 )
