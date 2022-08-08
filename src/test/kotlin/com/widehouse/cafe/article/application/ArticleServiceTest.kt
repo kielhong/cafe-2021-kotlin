@@ -72,11 +72,11 @@ internal class ArticleServiceTest {
     @Test
     fun `cafeId가 주어지면 cafeId에 연결된 모든 article목록을 반환`() {
         // given
-        val cafeUrl = "url"
-        given(boardRepository.findByCafeId(anyString())).willReturn(Flux.just(Board("1", cafeUrl), Board("2", cafeUrl)))
+        val cafeId = "test"
+        given(boardRepository.findByCafeId(anyString())).willReturn(Flux.just(Board("1", cafeId), Board("2", cafeId)))
         given(articleRepository.findByBoardsIn(anyList())).willReturn(Flux.just(article1, article2))
         // when
-        val result = service.listByCafe(cafeUrl)
+        val result = service.listByCafe(cafeId)
         // then
         StepVerifier.create(result)
             .assertNext { then(it).isEqualTo(article1) }

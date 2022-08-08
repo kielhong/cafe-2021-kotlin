@@ -22,7 +22,7 @@ class BoardRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun when_findByCafeUrl_then_returnFluxBoard() {
+    fun when_findByCafeId_then_returnFluxBoard() {
         // given
         val board1 = boardRepository.save(Board("1", cafe.id)).block()
         val board2 = boardRepository.save(Board("2", cafe.id)).block()

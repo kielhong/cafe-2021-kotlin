@@ -33,7 +33,7 @@ class BoardServiceTest {
     @Nested
     inner class GetBoard {
         @Test
-        fun given_cafeUrl_boardId_when_getBoard_then_returnBoard() {
+        fun given_cafeId_boardId_when_getBoard_then_returnBoard() {
             // given
             val board = Board("1234", cafe.id)
             given(boardRepository.findById(board.id)).willReturn(Mono.just(board))
@@ -47,7 +47,7 @@ class BoardServiceTest {
     }
 
     @Test
-    fun given_cafeUrl_when_listBoard_then_listBoardByCafe() {
+    fun given_cafeId_when_listBoard_then_listBoardByCafe() {
         // given
         val board1 = Board("1", cafe.id)
         val board2 = Board("2", cafe.id)
