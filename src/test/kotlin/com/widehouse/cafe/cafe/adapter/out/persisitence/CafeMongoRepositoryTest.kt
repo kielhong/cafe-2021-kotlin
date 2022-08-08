@@ -24,7 +24,7 @@ internal class CafeMongoRepositoryTest @Autowired constructor(
     @Test
     fun when_findById_then_returnMonoCafe() {
         // given
-        val cafe = template.save(Cafe("test", "name", "desc", "theme")).block()
+        val cafe = template.save(Cafe("test", "name", "desc", 1L)).block()
         // when
         val result = cafeMongoRepository.findById(cafe!!.id)
         // then
@@ -48,17 +48,17 @@ internal class CafeMongoRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun given_theme_when_listByTheme_then_listFlux() {
+    fun given_categoryId_when_listByCategory_then_listFlux() {
         // given
-        val theme = "movie"
-        template.save(CafeFixtures.create("1", "name1", "desc1", theme)).block()
-        template.save(CafeFixtures.create("2", "name2", "desc2", theme)).block()
+        val categoryId = 1L
+        template.save(CafeFixtures.create("1", "name1", "desc1", categoryId)).block()
+        template.save(CafeFixtures.create("2", "name2", "desc2", categoryId)).block()
         // when
-        val result = cafeMongoRepository.findByTheme(theme)
+        val result = cafeMongoRepository.findByCategoryId(categoryId)
         // then
         StepVerifier.create(result)
-            .assertNext { then(it.theme).isEqualTo(theme) }
-            .assertNext { then(it.theme).isEqualTo(theme) }
+            .assertNext { then(it.categoryId).isEqualTo(categoryId) }
+            .assertNext { then(it.categoryId).isEqualTo(categoryId) }
             .verifyComplete()
     }
 }

@@ -20,8 +20,8 @@ class CafeService(
         cafeRepository.loadCafe(id)
 
     @Transactional(readOnly = true)
-    override fun listByTheme(theme: String): Flux<Cafe> =
-        cafeRepository.loadCafeByTheme(theme)
+    override fun listByCategory(categoryId: Long): Flux<Cafe> =
+        cafeRepository.loadCafeByCategory(categoryId)
 
     @Transactional
     override fun create(cafe: Cafe): Mono<Cafe> =

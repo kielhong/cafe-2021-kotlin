@@ -13,8 +13,8 @@ class CafePersistenceAdapter(
     override fun loadCafe(id: String): Mono<Cafe> =
         cafeMongoRepository.findById(id)
 
-    override fun loadCafeByTheme(theme: String): Flux<Cafe> =
-        cafeMongoRepository.findByTheme(theme)
+    override fun loadCafeByCategory(categoryId: Long): Flux<Cafe> =
+        cafeMongoRepository.findByCategoryId(categoryId)
 
     override fun createCafe(cafe: Cafe): Mono<Cafe> =
         cafeMongoRepository.insert(cafe)

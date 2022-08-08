@@ -86,14 +86,15 @@ internal class CafeControllerTest : DescribeSpec({
             }
         }
 
-        describe("GET cafe list by theme - /cafe?theme=any") {
+        describe("GET cafe list by category") {
             context("cafeService listCafe by category return cafes") {
-                val cafe1 = CafeFixtures.create("1", "name1", "desc1", "movie")
-                val cafe2 = CafeFixtures.create("2", "name2", "desc2", "movie")
-                every { cafeQueryUseCase.listByTheme("movie") } returns Flux.just(cafe1, cafe2)
+                val cafe1 = CafeFixtures.create("1", "name1", "desc1", 1L)
+                val cafe2 = CafeFixtures.create("2", "name2", "desc2", 1L)
+                every { cafeQueryUseCase.listByCategory(1L) } returns Flux.just(cafe1, cafe2)
+
                 it("should return cafes") {
                     webClient.get()
-                        .uri("/cafe?theme=movie")
+                        .uri("/cafe?categoryId=1")
                         .exchange()
                         .expectStatus().isOk
                 }

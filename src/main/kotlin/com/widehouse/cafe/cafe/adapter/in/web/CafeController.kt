@@ -32,9 +32,9 @@ class CafeController(
     fun getCafe(@PathVariable id: String): Mono<Cafe> =
         cafeQueryUseCase.getCafe(id)
 
-    @GetMapping(params = ["theme"])
-    fun listCafeByTheme(@RequestParam theme: String): Flux<Cafe> =
-        cafeQueryUseCase.listByTheme(theme)
+    @GetMapping(params = ["categoryId"])
+    fun listCafeByCategory(@RequestParam categoryId: Long): Flux<Cafe> =
+        cafeQueryUseCase.listByCategory(categoryId)
 
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ExceptionHandler
