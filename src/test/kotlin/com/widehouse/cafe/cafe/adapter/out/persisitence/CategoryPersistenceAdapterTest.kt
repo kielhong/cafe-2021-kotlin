@@ -21,7 +21,7 @@ class CategoryPersistenceAdapterTest : DescribeSpec({
         }
 
         describe("loadAllCategory") {
-            val categories = (1L..2L).map { CategoryEntity(it, "name$it") }
+            val categories = (1..2).map { CategoryEntity(it.toLong(), "name$it", it) }
             every { categoryMongoRepository.findAll() } returns Flux.fromIterable(categories)
 
             it("should list all categories") {
