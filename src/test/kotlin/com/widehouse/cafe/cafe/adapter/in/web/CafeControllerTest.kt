@@ -39,6 +39,7 @@ internal class CafeControllerTest : DescribeSpec({
             context("cafeService getCafe return cafe") {
                 val cafe = CafeFixtures.create()
                 every { cafeQueryUseCase.getCafe(any()) } returns Mono.just(cafe)
+
                 it("should return cafe") {
                     webClient.get()
                         .uri("/cafe/{id}", cafe.id)

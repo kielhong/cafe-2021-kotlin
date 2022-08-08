@@ -22,7 +22,7 @@ internal class CafeMongoRepositoryTest @Autowired constructor(
     }
 
     @Test
-    fun when_findByUrl_then_returnMonoCafe() {
+    fun when_findById_then_returnMonoCafe() {
         // given
         val cafe = template.save(Cafe("test", "name", "desc", "theme")).block()
         // when

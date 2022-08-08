@@ -25,8 +25,9 @@ class CategoryControllerTest(
 
     init {
         describe("GET /categories") {
-            val categories = (1L..5L).map { Category(it, "name$it") }
+            val categories = (1..5).map { Category(it.toLong(), "name$it", it) }
             every { categoryQueryUseCase.listCategories() } returns Flux.fromIterable(categories)
+
             it("should list all categories") {
                 webClient
                     .get()

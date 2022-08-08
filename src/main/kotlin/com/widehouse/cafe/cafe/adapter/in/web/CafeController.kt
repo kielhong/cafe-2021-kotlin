@@ -28,9 +28,9 @@ class CafeController(
         return cafeCreateUseCase.create(cafe)
     }
 
-    @GetMapping("{url}")
-    fun getCafe(@PathVariable url: String): Mono<Cafe> =
-        cafeQueryUseCase.getCafe(url)
+    @GetMapping("{id}")
+    fun getCafe(@PathVariable id: String): Mono<Cafe> =
+        cafeQueryUseCase.getCafe(id)
 
     @GetMapping(params = ["theme"])
     fun listCafeByTheme(@RequestParam theme: String): Flux<Cafe> =

@@ -70,6 +70,11 @@ tasks.jacocoTestReport {
     )
 }
 
+tasks.check {
+    dependsOn(tasks.test)
+    dependsOn(tasks.ktlintCheck)
+}
+
 tasks.bootRun {
     systemProperty("spring.profiles.active", "local")
 }

@@ -61,7 +61,7 @@ internal class BoardControllerTest(@Autowired val webClient: WebTestClient) {
     }
 
     @Test
-    fun given_cafeUrl_when_listByCafe_then_listBoards() {
+    fun given_cafeId_when_listByCafe_then_listBoards() {
         // given
         val board1 = Board("1", cafe.id)
         val board2 = Board("2", cafe.id)

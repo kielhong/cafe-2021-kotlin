@@ -21,14 +21,16 @@ internal class CafeServiceTest : DescribeSpec({
     val service = CafeService(cafeRepository)
 
     describe("getCafe") {
-        context("cafeRepository load cafe of url") {
-            val cafe = CafeFixtures.create("1")
+        context("cafeRepository load cafe of id") {
+            val cafe = CafeFixtures.create("test")
             every { cafeRepository.loadCafe(any()) } returns Mono.just(cafe)
-            it("should be cafe of url") {
-                service.getCafe("1")
+
+            it("should be cafe of id") {
+                service.getCafe("test")
                     .`as`(StepVerifier::create)
                     .assertNext { it shouldBe cafe }
                     .verifyComplete()
+
                 verify { cafeRepository.loadCafe(any()) }
             }
         }
@@ -54,7 +56,7 @@ internal class CafeServiceTest : DescribeSpec({
         val cafe = CafeFixtures.create("1")
         context("cafeRepository create and save cafe") {
             every { cafeRepository.createCafe(any()) } returns Mono.just(cafe)
-            it("should be cafe of url") {
+            it("should be cafe of id") {
                 service.create(cafe)
                     .`as`(StepVerifier::create)
                     .assertNext { it shouldBe cafe }

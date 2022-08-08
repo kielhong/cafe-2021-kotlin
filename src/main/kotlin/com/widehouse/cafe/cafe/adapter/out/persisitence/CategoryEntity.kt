@@ -8,8 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class CategoryEntity(
     @Id
     val id: Long,
-    val name: String
+    val name: String,
+    val listOrder: Int
 ) {
     fun toDomain(): Category =
-        Category(this.id, this.name)
+        Category(this.id, this.name, this.listOrder)
 }
