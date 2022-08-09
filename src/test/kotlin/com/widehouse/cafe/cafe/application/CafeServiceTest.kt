@@ -76,4 +76,16 @@ internal class CafeServiceTest : DescribeSpec({
             }
         }
     }
+
+    describe("Remove Cafe") {
+        val cafeId = "test"
+        context("cafeRepository delete cafe") {
+            every { cafeRepository.deleteCafe(cafeId) } returns Mono.empty()
+            service.remove(cafeId)
+
+            it("should delete cafe") {
+                verify { cafeRepository.deleteCafe(cafeId) }
+            }
+        }
+    }
 })

@@ -5,4 +5,5 @@ import reactor.core.publisher.Mono
 
 interface CafeCreateUseCase {
     fun create(cafe: Cafe): Mono<Cafe>
+    fun remove(id: String): Mono<Void>
 }
