@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
@@ -31,14 +32,14 @@ internal class CafePersistenceAdapterTest : DescribeSpec({
         }
     }
 
-    describe("CafePersistenceAdapter load cafe by theme") {
+    describe("CafePersistenceAdapter load cafe by category") {
         context("repository findByTheme returns cafes") {
             val categoryId = 1L
             val cafe1 = CafeFixtures.create("1")
             val cafe2 = CafeFixtures.create("2")
             every { cafeMongoRepository.findByCategoryId(categoryId) } returns Flux.just(cafe1, cafe2)
 
-            it("should be list cafe of theme") {
+            it("should be list cafe of category") {
                 adapter.loadCafeByCategory(categoryId)
                     .`as`(StepVerifier::create)
                     .assertNext { it shouldBe cafe1 }
@@ -58,6 +59,18 @@ internal class CafePersistenceAdapterTest : DescribeSpec({
                     .`as`(StepVerifier::create)
                     .assertNext { it shouldBe cafe }
                     .verifyComplete()
+            }
+        }
+    }
+
+    describe("CafePersistenceAdapter delete cafe") {
+        context("repository delete") {
+            val cafeId = "test"
+            every { cafeMongoRepository.deleteById(cafeId) } returns Mono.empty()
+            adapter.deleteCafe(cafeId)
+
+            it("should delete cafe") {
+                verify { cafeMongoRepository.deleteById(cafeId) }
             }
         }
     }

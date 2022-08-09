@@ -5,6 +5,7 @@ import com.widehouse.cafe.cafe.application.port.`in`.CafeQueryUseCase
 import com.widehouse.cafe.cafe.domain.Cafe
 import com.widehouse.cafe.common.exception.AlreadyExistException
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -26,6 +27,11 @@ class CafeController(
     @PostMapping
     fun createCafe(@RequestBody cafe: Cafe): Mono<Cafe> {
         return cafeCreateUseCase.create(cafe)
+    }
+
+    @DeleteMapping("{id}")
+    fun removeCafe(@PathVariable id: String): Mono<Void> {
+        return cafeCreateUseCase.remove(id)
     }
 
     @GetMapping("{id}")

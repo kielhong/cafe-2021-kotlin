@@ -27,4 +27,8 @@ class CafeService(
     override fun create(cafe: Cafe): Mono<Cafe> =
         cafeRepository.createCafe(cafe)
             .onErrorMap(DuplicateKeyException::class.java) { AlreadyExistException(cafe.id) }
+
+    @Transactional
+    override fun remove(id: String): Mono<Void> =
+        cafeRepository.deleteCafe(id)
 }

@@ -86,6 +86,25 @@ internal class CafeControllerTest : DescribeSpec({
             }
         }
 
+        describe("Delete cafe") {
+            context("cafeService delete cafe by cafeId") {
+                val cafeId = "test"
+                every { cafeCreateUseCase.remove(cafeId) } returns Mono.empty()
+
+                it("should delete cafe") {
+                    webClient.delete()
+                        .uri {
+                            it.path("/cafe/{cafeId}")
+                                .build(cafeId)
+                        }
+                        .exchange()
+                        .expectStatus().isOk
+
+                    verify { cafeCreateUseCase.remove(cafeId) }
+                }
+            }
+        }
+
         describe("GET cafe list by category") {
             context("cafeService listCafe by category return cafes") {
                 val cafe1 = CafeFixtures.create("1", "name1", "desc1", 1L)

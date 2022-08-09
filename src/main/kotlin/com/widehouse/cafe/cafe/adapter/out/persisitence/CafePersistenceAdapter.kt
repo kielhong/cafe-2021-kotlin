@@ -18,4 +18,7 @@ class CafePersistenceAdapter(
 
     override fun createCafe(cafe: Cafe): Mono<Cafe> =
         cafeMongoRepository.insert(cafe)
+
+    override fun deleteCafe(id: String): Mono<Void> =
+        cafeMongoRepository.deleteById(id)
 }

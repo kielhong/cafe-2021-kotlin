@@ -8,4 +8,5 @@ interface CafeRepository {
     fun loadCafe(id: String): Mono<Cafe>
     fun loadCafeByCategory(categoryId: Long): Flux<Cafe>
     fun createCafe(cafe: Cafe): Mono<Cafe>
+    fun deleteCafe(id: String): Mono<Void>
 }
