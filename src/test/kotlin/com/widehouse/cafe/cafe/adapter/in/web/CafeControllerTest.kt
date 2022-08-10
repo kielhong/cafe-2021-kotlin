@@ -2,7 +2,7 @@ package com.widehouse.cafe.cafe.adapter.`in`.web
 
 import com.ninjasquad.springmockk.MockkBean
 import com.widehouse.cafe.cafe.CafeFixtures
-import com.widehouse.cafe.cafe.application.port.`in`.CafeCreateUseCase
+import com.widehouse.cafe.cafe.application.port.`in`.CafeCommandUseCase
 import com.widehouse.cafe.cafe.application.port.`in`.CafeQueryUseCase
 import com.widehouse.cafe.common.exception.AlreadyExistException
 import io.kotest.core.spec.IsolationMode
@@ -32,7 +32,7 @@ internal class CafeControllerTest : DescribeSpec({
     private lateinit var cafeQueryUseCase: CafeQueryUseCase
 
     @MockkBean
-    private lateinit var cafeCreateUseCase: CafeCreateUseCase
+    private lateinit var cafeCommandUseCase: CafeCommandUseCase
 
     init {
         describe("Get cafe") {
@@ -54,9 +54,9 @@ internal class CafeControllerTest : DescribeSpec({
         }
 
         describe("Post cafe") {
-            context("cafeService create return article") {
+            context("cafeService create and return cafe") {
                 val cafe = CafeFixtures.create()
-                every { cafeCreateUseCase.create(cafe) } returns Mono.just(cafe)
+                every { cafeCommandUseCase.create(cafe) } returns Mono.just(cafe)
                 it("should return cafe and 200 OK") {
                     webClient.post()
                         .uri("/cafe")
@@ -67,12 +67,12 @@ internal class CafeControllerTest : DescribeSpec({
                         .expectBody()
                         .jsonPath("$.id").isEqualTo(cafe.id)
 
-                    verify { cafeCreateUseCase.create(cafe) }
+                    verify { cafeCommandUseCase.create(cafe) }
                 }
             }
             context("cafeService create with already exist id") {
                 val cafe = CafeFixtures.create()
-                every { cafeCreateUseCase.create(cafe) } returns Mono.error(AlreadyExistException(cafe.id))
+                every { cafeCommandUseCase.create(cafe) } returns Mono.error(AlreadyExistException(cafe.id))
                 it("should 409 conflict") {
                     webClient.post()
                         .uri("/cafe")
@@ -81,7 +81,30 @@ internal class CafeControllerTest : DescribeSpec({
                         .exchange()
                         .expectStatus().isEqualTo(HttpStatus.CONFLICT)
 
-                    verify { cafeCreateUseCase.create(cafe) }
+                    verify { cafeCommandUseCase.create(cafe) }
+                }
+            }
+        }
+
+        describe("PUT cafe") {
+            context("cafeService update and return updated cafe") {
+                val cafeId = "test"
+                val updateRequest = CafeRequest(id = cafeId, name = "newName", description = "newDesc", categoryId = 2L)
+                val updatedCafe = CafeFixtures.create(id = cafeId, name = updateRequest.name, description = updateRequest.description, categoryId = updateRequest.categoryId)
+                every { cafeCommandUseCase.update(cafeId, updateRequest) } returns Mono.just(updatedCafe)
+
+                it("should return cafe and 200 OK") {
+                    webClient.put()
+                        .uri { it.path("/cafe/{cafeId}").build(cafeId) }
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(updateRequest))
+                        .exchange()
+                        .expectStatus().isOk
+                        .expectBody()
+                        .jsonPath("$.id").isEqualTo(cafeId)
+                        .jsonPath("$.name").isEqualTo(updatedCafe.name)
+
+                    verify { cafeCommandUseCase.update(cafeId, updateRequest) }
                 }
             }
         }
@@ -89,7 +112,7 @@ internal class CafeControllerTest : DescribeSpec({
         describe("Delete cafe") {
             context("cafeService delete cafe by cafeId") {
                 val cafeId = "test"
-                every { cafeCreateUseCase.remove(cafeId) } returns Mono.empty()
+                every { cafeCommandUseCase.remove(cafeId) } returns Mono.empty()
 
                 it("should delete cafe") {
                     webClient.delete()
@@ -100,7 +123,7 @@ internal class CafeControllerTest : DescribeSpec({
                         .exchange()
                         .expectStatus().isOk
 
-                    verify { cafeCreateUseCase.remove(cafeId) }
+                    verify { cafeCommandUseCase.remove(cafeId) }
                 }
             }
         }
