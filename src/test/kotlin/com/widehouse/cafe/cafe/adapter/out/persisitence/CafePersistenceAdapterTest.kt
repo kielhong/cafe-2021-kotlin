@@ -17,7 +17,7 @@ internal class CafePersistenceAdapterTest : DescribeSpec({
     val cafeMongoRepository = mockk<CafeMongoRepository>()
     val adapter = CafePersistenceAdapter(cafeMongoRepository)
 
-    describe("CafePersistenceAdapter load cafe of id") {
+    describe("load cafe of id") {
         context("repository returns cafe") {
             val cafe = CafeFixtures.create()
             val cafeId = cafe.id
@@ -32,7 +32,7 @@ internal class CafePersistenceAdapterTest : DescribeSpec({
         }
     }
 
-    describe("CafePersistenceAdapter load cafe by category") {
+    describe("load cafe by category") {
         context("repository findByTheme returns cafes") {
             val categoryId = 1L
             val cafe1 = CafeFixtures.create("1")
@@ -49,7 +49,7 @@ internal class CafePersistenceAdapterTest : DescribeSpec({
         }
     }
 
-    describe("CafePersistenceAdapter create cafe") {
+    describe("create cafe") {
         context("repository insert and returns cafes") {
             val cafe = CafeFixtures.create()
             every { cafeMongoRepository.insert(cafe) } returns Mono.just(cafe)
@@ -63,7 +63,20 @@ internal class CafePersistenceAdapterTest : DescribeSpec({
         }
     }
 
-    describe("CafePersistenceAdapter delete cafe") {
+    describe("update cafe") {
+        context("repository update") {
+            val updateCafe = CafeFixtures.create()
+            every { cafeMongoRepository.save(updateCafe) } returns Mono.just(updateCafe)
+
+            adapter.updateCafe(updateCafe)
+
+            it("should update cafe") {
+                verify { cafeMongoRepository.save(updateCafe) }
+            }
+        }
+    }
+
+    describe("delete cafe") {
         context("repository delete") {
             val cafeId = "test"
             every { cafeMongoRepository.deleteById(cafeId) } returns Mono.empty()

@@ -1,6 +1,6 @@
 package com.widehouse.cafe.cafe.adapter.`in`.web
 
-import com.widehouse.cafe.cafe.application.port.`in`.CafeCreateUseCase
+import com.widehouse.cafe.cafe.application.port.`in`.CafeCommandUseCase
 import com.widehouse.cafe.cafe.application.port.`in`.CafeQueryUseCase
 import com.widehouse.cafe.cafe.domain.Cafe
 import com.widehouse.cafe.common.exception.AlreadyExistException
@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -22,16 +23,21 @@ import reactor.core.publisher.Mono
 @RequestMapping("cafe")
 class CafeController(
     private val cafeQueryUseCase: CafeQueryUseCase,
-    private val cafeCreateUseCase: CafeCreateUseCase
+    private val cafeCommandUseCase: CafeCommandUseCase
 ) {
     @PostMapping
     fun createCafe(@RequestBody cafe: Cafe): Mono<Cafe> {
-        return cafeCreateUseCase.create(cafe)
+        return cafeCommandUseCase.create(cafe)
+    }
+
+    @PutMapping("{id}")
+    fun updateCafe(@PathVariable id: String, @RequestBody cafeRequest: CafeRequest): Mono<Cafe> {
+        return cafeCommandUseCase.update(id, cafeRequest)
     }
 
     @DeleteMapping("{id}")
     fun removeCafe(@PathVariable id: String): Mono<Void> {
-        return cafeCreateUseCase.remove(id)
+        return cafeCommandUseCase.remove(id)
     }
 
     @GetMapping("{id}")

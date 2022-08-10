@@ -9,4 +9,5 @@ interface CafeRepository {
     fun loadCafeByCategory(categoryId: Long): Flux<Cafe>
     fun createCafe(cafe: Cafe): Mono<Cafe>
     fun deleteCafe(id: String): Mono<Void>
+    fun updateCafe(cafe: Cafe): Mono<Cafe>
 }

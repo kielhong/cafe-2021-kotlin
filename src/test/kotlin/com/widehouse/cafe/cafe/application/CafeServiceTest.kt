@@ -1,8 +1,10 @@
 package com.widehouse.cafe.cafe.application
 
 import com.widehouse.cafe.cafe.CafeFixtures
+import com.widehouse.cafe.cafe.adapter.`in`.web.CafeRequest
 import com.widehouse.cafe.cafe.application.port.out.CafeRepository
 import com.widehouse.cafe.common.exception.AlreadyExistException
+import com.widehouse.cafe.common.exception.DataNotFoundException
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
@@ -73,6 +75,49 @@ internal class CafeServiceTest : DescribeSpec({
                     .expectError(AlreadyExistException::class.java)
                     .verify()
                 verify { cafeRepository.createCafe(any()) }
+            }
+        }
+    }
+
+    describe("Update Cafe") {
+        val cafeId = "test"
+        val cafeRequest = CafeRequest(id = cafeId, name = "newName", description = "newDesc", categoryId = 2L)
+        val updatedCafe = CafeFixtures.create(id = cafeId, name = cafeRequest.name, description = cafeRequest.description, categoryId = cafeRequest.categoryId)
+        every { cafeRepository.updateCafe(any()) } returns Mono.just(updatedCafe)
+
+        context("cafe exists") {
+            every { cafeRepository.loadCafe(cafeId) } returns Mono.just(CafeFixtures.create(cafeId))
+
+            val result = service.update(cafeId, cafeRequest)
+
+            it("should update cafe") {
+                StepVerifier.create(result)
+                    .assertNext { it.id shouldBe cafeId }
+                    .verifyComplete()
+
+                verify {
+                    cafeRepository.loadCafe(cafeId)
+                    cafeRepository.updateCafe(
+                        withArg {
+                            it.id shouldBe cafeId
+                            it.name shouldBe cafeRequest.name
+                            it.description shouldBe cafeRequest.description
+                            it.categoryId shouldBe cafeRequest.categoryId
+                        }
+                    )
+                }
+            }
+        }
+
+        context("cafe not exists") {
+            every { cafeRepository.loadCafe(cafeId) } returns Mono.empty()
+            val result = service.update(cafeId, cafeRequest)
+
+            it("should throws DomainNotFoundException") {
+                StepVerifier.create(result)
+                    .expectError(DataNotFoundException::class.java)
+
+                verify(exactly = 0) { cafeRepository.updateCafe(any()) }
             }
         }
     }
