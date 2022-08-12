@@ -32,8 +32,7 @@ class CafeService(
     @Transactional
     override fun update(id: String, cafeRequest: CafeRequest): Mono<Cafe> {
         return cafeRepository.loadCafe(id)
-            .map { cafeRequest.apply { this.id = id } }
-            .map { it.toDomain() }
+            .map { Cafe(id, cafeRequest.name, cafeRequest.description, cafeRequest.categoryId) }
             .flatMap { cafeRepository.updateCafe(it) }
     }
 
