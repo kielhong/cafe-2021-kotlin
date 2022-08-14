@@ -7,5 +7,5 @@ import reactor.core.publisher.Mono
 interface CafeCommandUseCase {
     fun create(cafe: Cafe): Mono<Cafe>
     fun remove(id: String): Mono<Void>
-    fun update(cafeId: String, cafeRequest: CafeRequest): Mono<Cafe>
+    fun update(id: String, cafeRequest: CafeRequest): Mono<Cafe>
 }

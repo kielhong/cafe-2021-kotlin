@@ -5,6 +5,7 @@ import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.cafe.application.port.`in`.CafeCommandUseCase
 import com.widehouse.cafe.cafe.application.port.`in`.CafeQueryUseCase
 import com.widehouse.cafe.common.exception.AlreadyExistException
+import com.widehouse.cafe.common.exception.DataNotFoundException
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.spring.SpringListener
@@ -110,8 +111,9 @@ internal class CafeControllerTest : DescribeSpec({
         }
 
         describe("Delete cafe") {
+            val cafeId = "test"
+
             context("cafeService delete cafe by cafeId") {
-                val cafeId = "test"
                 every { cafeCommandUseCase.remove(cafeId) } returns Mono.empty()
 
                 it("should delete cafe") {
@@ -122,7 +124,21 @@ internal class CafeControllerTest : DescribeSpec({
                         }
                         .exchange()
                         .expectStatus().isOk
+                    verify { cafeCommandUseCase.remove(cafeId) }
+                }
+            }
 
+            context("cafeService throw DataNotFoundException") {
+                every { cafeCommandUseCase.remove(cafeId) } returns Mono.error(DataNotFoundException(cafeId))
+
+                it("should 404 Not Found") {
+                    webClient.delete()
+                        .uri {
+                            it.path("/cafe/{cafeId}")
+                                .build(cafeId)
+                        }
+                        .exchange()
+                        .expectStatus().isNotFound
                     verify { cafeCommandUseCase.remove(cafeId) }
                 }
             }

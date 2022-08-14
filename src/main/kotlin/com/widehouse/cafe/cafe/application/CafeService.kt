@@ -6,6 +6,7 @@ import com.widehouse.cafe.cafe.application.port.`in`.CafeQueryUseCase
 import com.widehouse.cafe.cafe.application.port.out.CafeRepository
 import com.widehouse.cafe.cafe.domain.Cafe
 import com.widehouse.cafe.common.exception.AlreadyExistException
+import com.widehouse.cafe.common.exception.DataNotFoundException
 import org.springframework.dao.DuplicateKeyException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -38,5 +39,7 @@ class CafeService(
 
     @Transactional
     override fun remove(id: String): Mono<Void> =
-        cafeRepository.deleteCafe(id)
+        cafeRepository.loadCafe(id)
+            .switchIfEmpty(Mono.defer { Mono.error(DataNotFoundException(id)) })
+            .flatMap { cafeRepository.deleteCafe(id) }
 }
