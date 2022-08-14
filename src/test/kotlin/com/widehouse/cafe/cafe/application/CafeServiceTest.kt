@@ -124,12 +124,32 @@ internal class CafeServiceTest : DescribeSpec({
 
     describe("Remove Cafe") {
         val cafeId = "test"
-        context("cafeRepository delete cafe") {
-            every { cafeRepository.deleteCafe(cafeId) } returns Mono.empty()
-            service.remove(cafeId)
 
+        context("cafe exists") {
+            every { cafeRepository.loadCafe(cafeId) } returns Mono.just(CafeFixtures.create(cafeId))
+            every { cafeRepository.deleteCafe(cafeId) } returns Mono.empty()
+            val result = service.remove(cafeId)
             it("should delete cafe") {
-                verify { cafeRepository.deleteCafe(cafeId) }
+                StepVerifier.create(result)
+                    .verifyComplete()
+                verify {
+                    cafeRepository.loadCafe(cafeId)
+                    cafeRepository.deleteCafe(cafeId)
+                }
+            }
+        }
+
+        context("cafe not exists") {
+            every { cafeRepository.loadCafe(cafeId) } returns Mono.empty()
+            val result = service.remove(cafeId)
+            it("should DataNotFoundException error") {
+                StepVerifier.create(result)
+                    .expectError(DataNotFoundException::class.java)
+                    .verify()
+
+                verify(exactly = 0) {
+                    cafeRepository.deleteCafe(cafeId)
+                }
             }
         }
     }
