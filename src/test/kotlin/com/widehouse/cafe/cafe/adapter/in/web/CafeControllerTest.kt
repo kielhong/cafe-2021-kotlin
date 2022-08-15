@@ -43,7 +43,7 @@ internal class CafeControllerTest : DescribeSpec({
 
                 it("should return cafe") {
                     webClient.get()
-                        .uri("/cafe/{id}", cafe.id)
+                        .uri("/cafes/{id}", cafe.id)
                         .exchange()
                         .expectStatus().isOk
                         .expectBody()
@@ -60,7 +60,7 @@ internal class CafeControllerTest : DescribeSpec({
                 every { cafeCommandUseCase.create(cafe) } returns Mono.just(cafe)
                 it("should return cafe and 200 OK") {
                     webClient.post()
-                        .uri("/cafe")
+                        .uri("/cafes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(cafe))
                         .exchange()
@@ -76,7 +76,7 @@ internal class CafeControllerTest : DescribeSpec({
                 every { cafeCommandUseCase.create(cafe) } returns Mono.error(AlreadyExistException(cafe.id))
                 it("should 409 conflict") {
                     webClient.post()
-                        .uri("/cafe")
+                        .uri("/cafes")
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(cafe))
                         .exchange()
@@ -96,7 +96,7 @@ internal class CafeControllerTest : DescribeSpec({
 
                 it("should return cafe and 200 OK") {
                     webClient.put()
-                        .uri { it.path("/cafe/{cafeId}").build(cafeId) }
+                        .uri { it.path("/cafes/{cafeId}").build(cafeId) }
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(BodyInserters.fromValue(updateRequest))
                         .exchange()
@@ -119,7 +119,7 @@ internal class CafeControllerTest : DescribeSpec({
                 it("should delete cafe") {
                     webClient.delete()
                         .uri {
-                            it.path("/cafe/{cafeId}")
+                            it.path("/cafes/{cafeId}")
                                 .build(cafeId)
                         }
                         .exchange()
@@ -134,7 +134,7 @@ internal class CafeControllerTest : DescribeSpec({
                 it("should 404 Not Found") {
                     webClient.delete()
                         .uri {
-                            it.path("/cafe/{cafeId}")
+                            it.path("/cafes/{cafeId}")
                                 .build(cafeId)
                         }
                         .exchange()
@@ -152,7 +152,7 @@ internal class CafeControllerTest : DescribeSpec({
 
                 it("should return cafes") {
                     webClient.get()
-                        .uri("/cafe?categoryId=1")
+                        .uri("/cafes?categoryId=1")
                         .exchange()
                         .expectStatus().isOk
                 }
