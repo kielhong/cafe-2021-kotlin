@@ -113,9 +113,10 @@ internal class CafeServiceTest : DescribeSpec({
             every { cafeRepository.loadCafe(cafeId) } returns Mono.empty()
             val result = service.update(cafeId, cafeRequest)
 
-            it("should throws DomainNotFoundException") {
+            it("should throws Mono.error") {
                 StepVerifier.create(result)
                     .expectError(DataNotFoundException::class.java)
+                    .verify()
 
                 verify(exactly = 0) { cafeRepository.updateCafe(any()) }
             }
@@ -147,9 +148,7 @@ internal class CafeServiceTest : DescribeSpec({
                     .expectError(DataNotFoundException::class.java)
                     .verify()
 
-                verify(exactly = 0) {
-                    cafeRepository.deleteCafe(cafeId)
-                }
+                verify(exactly = 0) { cafeRepository.deleteCafe(cafeId) }
             }
         }
     }

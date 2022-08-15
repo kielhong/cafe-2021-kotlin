@@ -33,6 +33,7 @@ class CafeService(
     @Transactional
     override fun update(id: String, cafeRequest: CafeRequest): Mono<Cafe> {
         return cafeRepository.loadCafe(id)
+            .switchIfEmpty(Mono.defer { Mono.error(DataNotFoundException(id)) })
             .map { Cafe(id, cafeRequest.name, cafeRequest.description, cafeRequest.categoryId) }
             .flatMap { cafeRepository.updateCafe(it) }
     }
@@ -41,5 +42,5 @@ class CafeService(
     override fun remove(id: String): Mono<Void> =
         cafeRepository.loadCafe(id)
             .switchIfEmpty(Mono.defer { Mono.error(DataNotFoundException(id)) })
-            .flatMap { cafeRepository.deleteCafe(id) }
+            .flatMap { cafeRepository.deleteCafe(it.id) }
 }
