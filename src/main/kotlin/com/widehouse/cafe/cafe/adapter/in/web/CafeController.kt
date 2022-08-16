@@ -20,7 +20,7 @@ import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @RestController
-@RequestMapping("cafe")
+@RequestMapping("cafes")
 class CafeController(
     private val cafeQueryUseCase: CafeQueryUseCase,
     private val cafeCommandUseCase: CafeCommandUseCase

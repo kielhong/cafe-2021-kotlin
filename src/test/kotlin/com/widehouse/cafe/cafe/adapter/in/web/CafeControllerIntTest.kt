@@ -25,7 +25,7 @@ class CafeControllerIntTest(
         // then
         webClient.get()
             .uri {
-                it.path("/cafe")
+                it.path("/cafes")
                     .queryParam("categoryId", categoryId)
                     .build()
             }
@@ -44,7 +44,7 @@ class CafeControllerIntTest(
         // when
         webClient.put()
             .uri {
-                it.path("/cafe/{cafeId}")
+                it.path("/cafes/{cafeId}")
                     .build(cafeId)
             }
             .contentType(MediaType.APPLICATION_JSON)
