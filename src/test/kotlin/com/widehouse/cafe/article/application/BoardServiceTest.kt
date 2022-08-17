@@ -1,64 +1,54 @@
 package com.widehouse.cafe.article.application
 
+import com.widehouse.cafe.article.BoardFixtures
 import com.widehouse.cafe.article.adapter.out.persistence.BoardRepository
-import com.widehouse.cafe.article.domain.Board
 import com.widehouse.cafe.cafe.CafeFixtures
-import com.widehouse.cafe.cafe.domain.Cafe
-import org.assertj.core.api.BDDAssertions.then
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.BDDMockito.given
-import org.mockito.Mock
-import org.mockito.junit.jupiter.MockitoExtension
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 
-@ExtendWith(MockitoExtension::class)
-class BoardServiceTest {
-    lateinit var service: BoardService
-    @Mock
-    lateinit var boardRepository: BoardRepository
+internal class BoardServiceTest : DescribeSpec({
+    isolationMode = IsolationMode.InstancePerLeaf
 
-    lateinit var cafe: Cafe
+    val boardRepository = mockk<BoardRepository>()
+    val service = BoardService(boardRepository)
 
-    @BeforeEach
-    internal fun setUp() {
-        service = BoardService(boardRepository)
-        cafe = CafeFixtures.create()
-    }
+    val cafe = CafeFixtures.create()
 
-    @Nested
-    inner class GetBoard {
-        @Test
-        fun given_cafeId_boardId_when_getBoard_then_returnBoard() {
-            // given
-            val board = Board("1234", cafe.id)
-            given(boardRepository.findById(board.id)).willReturn(Mono.just(board))
-            // when
+    describe("getBoard") {
+        val board = BoardFixtures.create("1234", cafe.id)
+        context("boardRepository find board by id") {
+            every { boardRepository.findById(board.id) } returns Mono.just(board)
             val result = service.getBoard(board.id)
-            // then
-            StepVerifier.create(result)
-                .assertNext { then(it).isEqualTo(board) }
-                .verifyComplete()
+            it("should return board") {
+                StepVerifier.create(result)
+                    .assertNext { it shouldBe board }
+                    .verifyComplete()
+            }
         }
     }
 
-    @Test
-    fun given_cafeId_when_listBoard_then_listBoardByCafe() {
-        // given
-        val board1 = Board("1", cafe.id)
-        val board2 = Board("2", cafe.id)
-        given(boardRepository.findByCafeId(cafe.id))
-            .willReturn(Flux.just(board1, board2))
-        // when
-        val result = service.listBoard(cafe.id)
-        // then
-        StepVerifier.create(result)
-            .assertNext { then(it).isEqualTo(board1) }
-            .assertNext { then(it).isEqualTo(board2) }
-            .verifyComplete()
+    describe("listBoard") {
+        val board1 = BoardFixtures.create("1", cafe.id, 2)
+        val board2 = BoardFixtures.create("2", cafe.id, 1)
+
+        context("boardRepository findByCafeId") {
+            every { boardRepository.findByCafeId(cafe.id) } returns Flux.just(board1, board2)
+
+            val result = service.listBoard(cafe.id)
+            it("should list boards order by listOrder") {
+                StepVerifier.create(result)
+                    .assertNext { it shouldBe board2 }
+                    .assertNext { it shouldBe board1 }
+                    .verifyComplete()
+                verify { boardRepository.findByCafeId(cafe.id) }
+            }
+        }
     }
-}
+})

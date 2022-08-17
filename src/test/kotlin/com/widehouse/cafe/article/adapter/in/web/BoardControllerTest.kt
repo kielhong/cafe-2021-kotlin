@@ -39,7 +39,7 @@ internal class BoardControllerTest(@Autowired val webClient: WebTestClient) {
             given(boardService.getBoard(board.id)).willReturn(Mono.just(board))
             // when
             webClient.get()
-                .uri("/board/{boardId}", board.id)
+                .uri("/boards/{boardId}", board.id)
                 .exchange()
                 .expectStatus().isOk
                 .expectBody()
@@ -54,7 +54,10 @@ internal class BoardControllerTest(@Autowired val webClient: WebTestClient) {
             given(boardService.getBoard(boardId)).willReturn(Mono.empty())
             // when
             webClient.get()
-                .uri("/board/{boardId}", boardId)
+                .uri {
+                    it.path("/boards/{boardId}")
+                        .build(boardId)
+                }
                 .exchange()
                 .expectStatus().isNotFound
         }
@@ -63,12 +66,16 @@ internal class BoardControllerTest(@Autowired val webClient: WebTestClient) {
     @Test
     fun given_cafeId_when_listByCafe_then_listBoards() {
         // given
-        val board1 = Board("1", cafe.id)
-        val board2 = Board("2", cafe.id)
+        val board1 = BoardFixtures.create("1", cafe.id)
+        val board2 = BoardFixtures.create("2", cafe.id)
         given(boardService.listBoard(cafe.id)).willReturn(Flux.just(board1, board2))
         // when
         webClient.get()
-            .uri("/board?cafeId={cafeId}", cafe.id)
+            .uri {
+                it.path("/boards")
+                    .queryParam("cafeId", cafe.id)
+                    .build()
+            }
             .exchange()
             .expectStatus().isOk
             .expectBodyList(Board::class.java)
