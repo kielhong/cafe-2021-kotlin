@@ -7,5 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "board")
 data class Board(
     @Id val id: String,
-    @Indexed val cafeId: String
+    @Indexed val cafeId: String,
+    val listOrder: Int
 )

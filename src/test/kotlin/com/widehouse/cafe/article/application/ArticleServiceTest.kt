@@ -2,10 +2,10 @@ package com.widehouse.cafe.article.application
 
 import com.widehouse.cafe.article.Article
 import com.widehouse.cafe.article.ArticleFixtures
+import com.widehouse.cafe.article.BoardFixtures
 import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleDto
 import com.widehouse.cafe.article.adapter.out.persistence.ArticleRepository
 import com.widehouse.cafe.article.adapter.out.persistence.BoardRepository
-import com.widehouse.cafe.article.domain.Board
 import com.widehouse.cafe.common.exception.DataNotFoundException
 import org.assertj.core.api.BDDAssertions.then
 import org.junit.jupiter.api.BeforeEach
@@ -73,7 +73,8 @@ internal class ArticleServiceTest {
     fun `cafeId가 주어지면 cafeId에 연결된 모든 article목록을 반환`() {
         // given
         val cafeId = "test"
-        given(boardRepository.findByCafeId(anyString())).willReturn(Flux.just(Board("1", cafeId), Board("2", cafeId)))
+        given(boardRepository.findByCafeId(anyString()))
+            .willReturn(Flux.just(BoardFixtures.create("1", cafeId), BoardFixtures.create("2", cafeId)))
         given(articleRepository.findByBoardsIn(anyList())).willReturn(Flux.just(article1, article2))
         // when
         val result = service.listByCafe(cafeId)

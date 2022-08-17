@@ -4,6 +4,7 @@ import com.widehouse.cafe.article.domain.Board
 
 class BoardFixtures {
     companion object {
-        fun create(id: String, cafeId: String) = Board(id, cafeId)
+        fun create(id: String, cafeId: String, listOrder: Int = 1) =
+            Board(id, cafeId, listOrder)
     }
 }

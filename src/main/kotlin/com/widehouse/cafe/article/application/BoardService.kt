@@ -9,13 +9,14 @@ import reactor.core.publisher.Mono
 
 @Service
 class BoardService(
-    private val boardRepository: BoardRepository,
+    private val boardRepository: BoardRepository
 ) {
     @Transactional(readOnly = true)
-    fun getBoard(boardId: String): Mono<Board> = boardRepository.findById(boardId)
+    fun getBoard(boardId: String): Mono<Board> =
+        boardRepository.findById(boardId)
 
     @Transactional(readOnly = true)
-    fun listBoard(cafeId: String): Flux<Board> {
-        return boardRepository.findByCafeId(cafeId)
-    }
+    fun listBoard(cafeId: String): Flux<Board> =
+        boardRepository.findByCafeId(cafeId)
+            .sort(Comparator.comparingInt(Board::listOrder))
 }
