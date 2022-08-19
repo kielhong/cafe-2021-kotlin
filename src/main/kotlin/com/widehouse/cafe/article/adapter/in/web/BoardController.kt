@@ -1,10 +1,13 @@
 package com.widehouse.cafe.article.adapter.`in`.web
 
+import com.widehouse.cafe.article.adapter.`in`.web.dto.BoardRequest
 import com.widehouse.cafe.article.application.BoardService
 import com.widehouse.cafe.article.domain.Board
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
@@ -22,4 +25,9 @@ class BoardController(private val boardService: BoardService) {
     @GetMapping(params = ["cafeId"])
     fun listBoard(@RequestParam cafeId: String) =
         boardService.listBoard(cafeId)
+
+    @PostMapping
+    fun createBoard(@RequestBody request: BoardRequest): Mono<Board> {
+        return boardService.createBoard(request)
+    }
 }

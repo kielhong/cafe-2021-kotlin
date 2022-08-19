@@ -8,5 +8,6 @@ import org.springframework.data.mongodb.core.mapping.Document
 data class Board(
     @Id val id: String,
     @Indexed val cafeId: String,
+    val name: String,
     val listOrder: Int
 )
