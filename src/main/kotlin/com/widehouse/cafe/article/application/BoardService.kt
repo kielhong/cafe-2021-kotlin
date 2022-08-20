@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.LocalDateTime
 import java.util.UUID
 
 @Service
@@ -24,5 +25,7 @@ class BoardService(
 
     @Transactional
     fun createBoard(request: BoardRequest): Mono<Board> =
-        boardRepository.save(Board(UUID.randomUUID().toString(), request.cafeId, request.name, request.listOrder))
+        boardRepository.save(
+            Board(UUID.randomUUID().toString(), request.cafeId, request.name, request.boardType, request.listOrder, LocalDateTime.now())
+        )
 }

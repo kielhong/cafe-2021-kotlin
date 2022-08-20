@@ -3,6 +3,7 @@ package com.widehouse.cafe.article.application
 import com.widehouse.cafe.article.BoardFixtures
 import com.widehouse.cafe.article.adapter.`in`.web.dto.BoardRequest
 import com.widehouse.cafe.article.adapter.out.persistence.BoardRepository
+import com.widehouse.cafe.article.domain.BoardType
 import com.widehouse.cafe.cafe.CafeFixtures
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
@@ -32,13 +33,14 @@ internal class BoardServiceTest : DescribeSpec({
                 StepVerifier.create(result)
                     .assertNext { it shouldBe board }
                     .verifyComplete()
+                verify { boardRepository.findById(board.id) }
             }
         }
     }
 
     describe("listBoard") {
-        val board1 = BoardFixtures.create("1", cafe.id, "board1", 2)
-        val board2 = BoardFixtures.create("2", cafe.id, "board2", 1)
+        val board1 = BoardFixtures.create("1", cafe.id, "board1", BoardType.Board, 2)
+        val board2 = BoardFixtures.create("2", cafe.id, "board2", BoardType.Board, 1)
 
         context("boardRepository findByCafeId") {
             every { boardRepository.findByCafeId(cafe.id) } returns Flux.just(board1, board2)
@@ -56,8 +58,8 @@ internal class BoardServiceTest : DescribeSpec({
 
     describe("create Board") {
         it("repository create and return board") {
-            val request = BoardRequest(cafe.id, "board", 1)
-            val board = BoardFixtures.create(UUID.randomUUID().toString(), request.cafeId, request.name, request.listOrder)
+            val request = BoardRequest(cafe.id, "board", BoardType.Board, 1)
+            val board = BoardFixtures.create(UUID.randomUUID().toString(), request.cafeId, request.name, request.boardType, request.listOrder)
             every { boardRepository.save(any()) } returns Mono.just(board)
 
             val result = service.createBoard(request)
