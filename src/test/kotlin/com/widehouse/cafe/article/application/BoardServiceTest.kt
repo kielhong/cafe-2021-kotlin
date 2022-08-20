@@ -33,6 +33,7 @@ internal class BoardServiceTest : DescribeSpec({
                 StepVerifier.create(result)
                     .assertNext { it shouldBe board }
                     .verifyComplete()
+                verify { boardRepository.findById(board.id) }
             }
         }
     }
