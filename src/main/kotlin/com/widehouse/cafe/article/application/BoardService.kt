@@ -24,5 +24,7 @@ class BoardService(
 
     @Transactional
     fun createBoard(request: BoardRequest): Mono<Board> =
-        boardRepository.save(Board(UUID.randomUUID().toString(), request.cafeId, request.name, request.listOrder))
+        boardRepository.save(
+            Board(UUID.randomUUID().toString(), request.cafeId, request.name, request.boardType, request.listOrder)
+        )
 }

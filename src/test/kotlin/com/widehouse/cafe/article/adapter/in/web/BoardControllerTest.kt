@@ -5,6 +5,7 @@ import com.widehouse.cafe.article.BoardFixtures
 import com.widehouse.cafe.article.adapter.`in`.web.dto.BoardRequest
 import com.widehouse.cafe.article.application.BoardService
 import com.widehouse.cafe.article.domain.Board
+import com.widehouse.cafe.article.domain.BoardType
 import com.widehouse.cafe.cafe.CafeFixtures
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
@@ -41,16 +42,19 @@ internal class BoardControllerTest : DescribeSpec({
             context("get board by boardId") {
                 val board = BoardFixtures.create(boardId, cafe.id)
                 every { boardService.getBoard(board.id) } returns Mono.just(board)
+                val responseSpec = webClient
+                    .get()
+                    .uri("/boards/{boardId}", board.id)
+                    .exchange()
+                it("status is OK") {
+                    responseSpec.expectStatus().isOk
+                }
                 it("should return board") {
-                    // when
-                    webClient
-                        .get()
-                        .uri("/boards/{boardId}", board.id)
-                        .exchange()
-                        .expectStatus().isOk
+                    responseSpec
                         .expectBody()
                         .jsonPath("$.id").isEqualTo(board.id)
-                        .jsonPath("$.cafeId").isEqualTo(cafe.id)
+                        .jsonPath("$.cafeId").isEqualTo(board.cafeId)
+                        .jsonPath("$.boardType").isEqualTo(board.boardType.toString())
                 }
             }
 
@@ -93,7 +97,7 @@ internal class BoardControllerTest : DescribeSpec({
 
         describe("post Board") {
             context("given request") {
-                val request = BoardRequest(cafe.id, "board", 1)
+                val request = BoardRequest(cafe.id, "board", BoardType.Board, 1)
                 every { boardService.createBoard(any()) } returns Mono.just(BoardFixtures.create("test", request.cafeId))
 
                 val response = webClient

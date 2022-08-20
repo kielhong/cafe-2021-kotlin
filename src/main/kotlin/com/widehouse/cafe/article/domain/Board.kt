@@ -9,5 +9,6 @@ data class Board(
     @Id val id: String,
     @Indexed val cafeId: String,
     val name: String,
+    val boardType: BoardType,
     val listOrder: Int
 )
