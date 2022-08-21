@@ -1,19 +1,20 @@
 package com.widehouse.cafe.article.adapter.`in`.web
 
+import com.ninjasquad.springmockk.MockkBean
 import com.widehouse.cafe.article.Article
 import com.widehouse.cafe.article.ArticleFixtures
 import com.widehouse.cafe.article.BoardFixtures
-import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleDto
+import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleRequest
 import com.widehouse.cafe.article.application.ArticleService
 import com.widehouse.cafe.cafe.CafeFixtures
 import com.widehouse.cafe.common.exception.DataNotFoundException
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.spring.SpringListener
-import org.mockito.BDDMockito.given
+import io.mockk.every
+import io.mockk.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters
@@ -30,7 +31,7 @@ internal class ArticleControllerTest : DescribeSpec({
     @Autowired
     private lateinit var webClient: WebTestClient
 
-    @MockBean
+    @MockkBean
     lateinit var articleService: ArticleService
 
     private val cafe = CafeFixtures.create()
@@ -42,7 +43,7 @@ internal class ArticleControllerTest : DescribeSpec({
 
             it("articleId에 해당하는 Article 반환") {
                 // given
-                given(articleService.getArticle(article.id)).willReturn(Mono.just(article))
+                every { articleService.getArticle(article.id) } returns Mono.just(article)
                 // when
                 webClient.get()
                     .uri("/article/{articleId}", article.id)
@@ -54,7 +55,7 @@ internal class ArticleControllerTest : DescribeSpec({
 
             it("articleId에 해당하는 Article이 없으면 404 NotFound") {
                 // given
-                given(articleService.getArticle(article.id)).willReturn(Mono.empty())
+                every { articleService.getArticle(article.id) } returns Mono.empty()
                 // when
                 webClient.get()
                     .uri("/article/{articleId}", article.id)
@@ -66,11 +67,11 @@ internal class ArticleControllerTest : DescribeSpec({
         describe("Get Articles by Board") {
             it("list article by Board") {
                 // given
-                given(articleService.listByBoard(board.id))
-                    .willReturn(
+                every { articleService.listByBoard(board.id) }
+                    .returns(
                         Flux.just(
-                            Article("1", listOf(board.id), "title1", "body1"),
-                            Article("2", listOf(board.id), "title2", "body2")
+                            Article("1", board.id, "title1", "body1"),
+                            Article("2", board.id, "title2", "body2")
                         )
                     )
                 // when
@@ -86,11 +87,11 @@ internal class ArticleControllerTest : DescribeSpec({
         describe("Get Articles by Cafe") {
             it("list article by Cafe") {
                 // given
-                given(articleService.listByCafe(cafe.id))
-                    .willReturn(
+                every { articleService.listByCafe(cafe.id) }
+                    .returns(
                         Flux.just(
-                            Article("1", listOf("board1"), "title1", "body1"),
-                            Article("2", listOf("board2"), "title2", "body2")
+                            Article("1", "board1", "title1", "body1"),
+                            Article("2", "board2", "title2", "body2")
                         )
                     )
                 // when
@@ -102,34 +103,42 @@ internal class ArticleControllerTest : DescribeSpec({
         }
 
         describe("Create Article") {
-            it("create article then ok") {
-                // given
-                val request = ArticleDto(boards = listOf("board"), title = "title", body = "body")
-                val article = Article("articleId", request.boards, request.title, request.body)
-                given(articleService.create(request)).willReturn(Mono.just(article))
-                // when
-                webClient.post()
+            context("POST /article") {
+                val request = ArticleRequest(boardId = board.id, title = "title", body = "body")
+                val article = Article("articleId", request.boardId, request.title, request.body)
+                every { articleService.create(request) } returns Mono.just(article)
+
+                val response = webClient.post()
                     .uri("/article")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(request))
                     .exchange()
-                    .expectStatus().isOk
-                    .expectBody()
-                    .jsonPath("$.id").isEqualTo(article.id)
+                it("then 200 OK") {
+                    response.expectStatus().isOk
+
+                    verify { articleService.create(request) }
+                }
+                it("return created article id") {
+                    response
+                        .expectBody()
+                        .jsonPath("$.id").isEqualTo(article.id)
+                }
             }
         }
 
         describe("Update Article") {
             val article = ArticleFixtures.create()
-            val request = ArticleDto(article.id, listOf("newBoardId"), "newTitle", "newBody")
+            val request = ArticleRequest("newBoardId", "newTitle", "newBody")
 
             it("exist article then update ok") {
                 // given
-                given(articleService.update(request))
-                    .willReturn(Mono.just(Article(article.id, request.boards, request.title, request.body)))
+                every { articleService.update(article.id, request) } returns Mono.just(Article(article.id, request.boardId, request.title, request.body))
                 // when
                 webClient.put()
-                    .uri("/article")
+                    .uri {
+                        it.path("/article/{articleId}")
+                            .build(article.id)
+                    }
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(request))
                     .exchange()
@@ -140,11 +149,13 @@ internal class ArticleControllerTest : DescribeSpec({
 
             it("not exist article then 404 error") {
                 // given
-                given(articleService.update(request))
-                    .willReturn(Mono.error(DataNotFoundException(request.id)))
+                every { articleService.update(article.id, request) } returns Mono.error(DataNotFoundException(article.id))
                 // then
                 webClient.put()
-                    .uri("/article")
+                    .uri {
+                        it.path("/article/{articleId}")
+                            .build(article.id)
+                    }
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(request))
                     .exchange()
