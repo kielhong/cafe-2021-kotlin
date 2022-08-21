@@ -1,171 +1,166 @@
 package com.widehouse.cafe.article.adapter.`in`.web
 
+import com.ninjasquad.springmockk.MockkBean
 import com.widehouse.cafe.article.Article
 import com.widehouse.cafe.article.ArticleFixtures
 import com.widehouse.cafe.article.BoardFixtures
-import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleDto
+import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleRequest
 import com.widehouse.cafe.article.application.ArticleService
-import com.widehouse.cafe.article.domain.Board
 import com.widehouse.cafe.cafe.CafeFixtures
-import com.widehouse.cafe.cafe.domain.Cafe
 import com.widehouse.cafe.common.exception.DataNotFoundException
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.DisplayName
-import org.junit.jupiter.api.Nested
-import org.junit.jupiter.api.Test
-import org.mockito.BDDMockito.given
+import io.kotest.core.spec.IsolationMode
+import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.spring.SpringListener
+import io.mockk.every
+import io.mockk.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.LocalDateTime.now
 import java.util.UUID
 
 @WebFluxTest(ArticleController::class)
-internal class ArticleControllerTest(@Autowired val webClient: WebTestClient) {
-    @MockBean
+internal class ArticleControllerTest : DescribeSpec({
+    isolationMode = IsolationMode.InstancePerLeaf
+}) {
+    override fun listeners() = listOf(SpringListener)
+
+    @Autowired
+    private lateinit var webClient: WebTestClient
+
+    @MockkBean
     lateinit var articleService: ArticleService
 
-    lateinit var cafe: Cafe
-    lateinit var board: Board
+    private val cafe = CafeFixtures.create()
+    private val board = BoardFixtures.create(UUID.randomUUID().toString(), cafe.id)
 
-    @BeforeEach
-    internal fun setUp() {
-        cafe = CafeFixtures.create()
-        board = BoardFixtures.create(UUID.randomUUID().toString(), cafe.id)
-    }
+    init {
+        describe("GetArticle") {
+            val article = ArticleFixtures.create()
 
-    @Nested
-    @DisplayName("Get a Article")
-    inner class GetArticle {
-        private val article = ArticleFixtures.create()
-        @Test
-        fun `articleId에 해당하는 Article 반환`() {
-            // given
-            given(articleService.getArticle(article.id)).willReturn(Mono.just(article))
-            // when
-            webClient.get()
-                .uri("/article/{articleId}", article.id)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.id").isEqualTo(article.id)
+            it("articleId에 해당하는 Article 반환") {
+                // given
+                every { articleService.getArticle(article.id) } returns Mono.just(article)
+                // when
+                webClient.get()
+                    .uri("/articles/{articleId}", article.id)
+                    .exchange()
+                    .expectStatus().isOk
+                    .expectBody()
+                    .jsonPath("$.id").isEqualTo(article.id)
+            }
+
+            it("articleId에 해당하는 Article이 없으면 404 NotFound") {
+                // given
+                every { articleService.getArticle(article.id) } returns Mono.empty()
+                // when
+                webClient.get()
+                    .uri("/articles/{articleId}", article.id)
+                    .exchange()
+                    .expectStatus().isNotFound
+            }
         }
 
-        @Test
-        fun `articleId에 해당하는 Article이 없으면 404 NotFound`() {
-            // given
-            given(articleService.getArticle(article.id)).willReturn(Mono.empty())
-            // when
-            webClient.get()
-                .uri("/article/{articleId}", article.id)
-                .exchange()
-                .expectStatus().isNotFound
-        }
-    }
-
-    @Nested
-    @DisplayName("Get Articles by Board")
-    inner class ListArticleByBoard {
-        @Test
-        fun `list article by Board`() {
-            // given
-            given(articleService.listByBoard(board.id))
-                .willReturn(
-                    Flux.just(
-                        Article("1", listOf(board.id), "title1", "body1"),
-                        Article("2", listOf(board.id), "title2", "body2")
+        describe("Get Articles by Board") {
+            it("list article by Board") {
+                // given
+                every { articleService.listByBoard(board.id) }
+                    .returns(
+                        Flux.just(
+                            Article("1", board.id, "title1", "body1", now()),
+                            Article("2", board.id, "title2", "body2", now())
+                        )
                     )
-                )
-            // when
-            webClient.get()
-                .uri("/article?boardId={boardId}", board.id)
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.size()").isEqualTo(2)
+                // when
+                webClient.get()
+                    .uri("/articles?boardId={boardId}", board.id)
+                    .exchange()
+                    .expectStatus().isOk
+                    .expectBody()
+                    .jsonPath("$.size()").isEqualTo(2)
+            }
         }
-    }
 
-    @Nested
-    @DisplayName("Get Articles by Cafe")
-    inner class ListArticleByCafe {
-        @Test
-        fun `list article by Cafe`() {
-            // given
-            given(articleService.listByCafe(cafe.id))
-                .willReturn(
-                    Flux.just(
-                        Article("1", listOf("board1"), "title1", "body1"),
-                        Article("2", listOf("board2"), "title2", "body2")
+        describe("Get Articles by Cafe") {
+            it("list article by Cafe") {
+                // given
+                every { articleService.listByCafe(cafe.id) }
+                    .returns(
+                        Flux.just(
+                            Article("1", "board1", "title1", "body1", now()),
+                            Article("2", "board2", "title2", "body2", now())
+                        )
                     )
-                )
-            // when
-            webClient.get()
-                .uri("/article?cafeId={cafeId}", cafe.id)
-                .exchange()
-                .expectStatus().isOk
-        }
-    }
-
-    @Nested
-    @DisplayName("Create Article")
-    inner class CreateArticle {
-        @Test
-        fun `create article then ok`() {
-            // given
-            val request = ArticleDto(boards = listOf("board"), title = "title", body = "body")
-            val article = Article("articleId", request.boards, request.title, request.body)
-            given(articleService.create(request)).willReturn(Mono.just(article))
-            // when
-            webClient.post()
-                .uri("/article")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(request))
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.id").isEqualTo(article.id)
-        }
-    }
-
-    @Nested
-    @DisplayName("Update Article")
-    inner class UpdateArticle {
-        private val article = ArticleFixtures.create()
-        private val request = ArticleDto(article.id, listOf("newBoardId"), "newTitle", "newBody")
-
-        @Test
-        fun `exist article then update ok`() {
-            // given
-            given(articleService.update(request))
-                .willReturn(Mono.just(Article(article.id, request.boards, request.title, request.body)))
-            // when
-            webClient.put()
-                .uri("/article")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(request))
-                .exchange()
-                .expectStatus().isOk
-                .expectBody()
-                .jsonPath("$.id").isEqualTo(article.id)
+                // when
+                webClient.get()
+                    .uri("/articles?cafeId={cafeId}", cafe.id)
+                    .exchange()
+                    .expectStatus().isOk
+            }
         }
 
-        @Test
-        fun `not exist article then 404 error`() {
-            // given
-            given(articleService.update(request))
-                .willReturn(Mono.error(DataNotFoundException(request.id)))
-            // then
-            webClient.put()
-                .uri("/article")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(request))
-                .exchange()
-                .expectStatus().isNotFound
+        describe("Create Article") {
+            context("POST /articles") {
+                val article = ArticleFixtures.create()
+                every { articleService.create(any()) } returns Mono.just(article)
+
+                val request = ArticleRequest(board.id, "title", "body")
+                val response = webClient.post()
+                    .uri("/articles")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(BodyInserters.fromValue(request))
+                    .exchange()
+                it("then 200 OK") {
+                    response.expectStatus().isOk
+                    verify { articleService.create(request) }
+                }
+                it("return created article id") {
+                    response
+                        .expectBody()
+                        .jsonPath("$.id").isEqualTo(article.id)
+                }
+            }
+        }
+
+        describe("Update Article") {
+            val article = ArticleFixtures.create()
+            val request = ArticleRequest("newBoardId", "newTitle", "newBody")
+
+            it("exist article then update ok") {
+                // given
+                every { articleService.update(article.id, request) } returns Mono.just(Article(article.id, request.boardId, request.title, request.body, now()))
+                // when
+                webClient.put()
+                    .uri {
+                        it.path("/articles/{articleId}")
+                            .build(article.id)
+                    }
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(BodyInserters.fromValue(request))
+                    .exchange()
+                    .expectStatus().isOk
+                    .expectBody()
+                    .jsonPath("$.id").isEqualTo(article.id)
+            }
+
+            it("not exist article then 404 error") {
+                // given
+                every { articleService.update(article.id, request) } returns Mono.error(DataNotFoundException(article.id))
+                // then
+                webClient.put()
+                    .uri {
+                        it.path("/articles/{articleId}")
+                            .build(article.id)
+                    }
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(BodyInserters.fromValue(request))
+                    .exchange()
+                    .expectStatus().isNotFound
+            }
         }
     }
 }

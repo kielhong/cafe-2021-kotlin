@@ -1,13 +1,14 @@
 package com.widehouse.cafe.article.application
 
 import com.widehouse.cafe.article.Article
-import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleDto
+import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleRequest
 import com.widehouse.cafe.article.adapter.out.persistence.ArticleRepository
 import com.widehouse.cafe.article.adapter.out.persistence.BoardRepository
 import com.widehouse.cafe.common.exception.DataNotFoundException
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.LocalDateTime
 import java.util.Collections
 import java.util.UUID
 
@@ -18,7 +19,7 @@ class ArticleService(
 ) {
     fun getArticle(articleId: String): Mono<Article> = articleRepository.findById(articleId)
 
-    fun listByBoard(boardId: String): Flux<Article> = articleRepository.findByBoards(boardId)
+    fun listByBoard(boardId: String): Flux<Article> = articleRepository.findByBoardId(boardId)
 
     fun listByCafe(cafeId: String): Flux<Article> {
         val boardIds = boardRepository.findByCafeId(cafeId)
@@ -28,16 +29,16 @@ class ArticleService(
             .orElse(Collections.emptyList())
             .toList()
 
-        return articleRepository.findByBoardsIn(boardIds)
+        return articleRepository.findByBoardIdIn(boardIds)
     }
 
-    fun create(articleDto: ArticleDto): Mono<Article> =
-        articleRepository.save(Article(UUID.randomUUID().toString(), articleDto.boards, articleDto.title, articleDto.body))
+    fun create(articleRequest: ArticleRequest): Mono<Article> =
+        articleRepository.save(Article(UUID.randomUUID().toString(), articleRequest.boardId, articleRequest.title, articleRequest.body, LocalDateTime.now()))
 
-    fun update(articleDto: ArticleDto): Mono<Article> =
-        articleRepository.findById(articleDto.id)
-            .flatMap { article ->
-                articleRepository.save(Article(article.id, articleDto.boards, articleDto.title, articleDto.body))
+    fun update(articleId: String, articleRequest: ArticleRequest): Mono<Article> =
+        articleRepository.findById(articleId)
+            .flatMap {
+                articleRepository.save(Article(it.id, articleRequest.boardId, articleRequest.title, articleRequest.body, it.createdAt))
             }
-            .switchIfEmpty(Mono.error(DataNotFoundException("Article(id=${articleDto.id}) not found")))
+            .switchIfEmpty(Mono.error(DataNotFoundException("Article(id=$articleId) not found")))
 }

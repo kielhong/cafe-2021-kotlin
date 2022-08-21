@@ -3,7 +3,7 @@ package com.widehouse.cafe.article.application
 import com.widehouse.cafe.article.Article
 import com.widehouse.cafe.article.ArticleFixtures
 import com.widehouse.cafe.article.BoardFixtures
-import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleDto
+import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleRequest
 import com.widehouse.cafe.article.adapter.out.persistence.ArticleRepository
 import com.widehouse.cafe.article.adapter.out.persistence.BoardRepository
 import com.widehouse.cafe.common.exception.DataNotFoundException
@@ -22,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
+import java.time.LocalDateTime
 
 @ExtendWith(MockitoExtension::class)
 internal class ArticleServiceTest {
@@ -40,8 +41,8 @@ internal class ArticleServiceTest {
         service = ArticleService(articleRepository, boardRepository)
 
         boardId = "board"
-        article1 = Article("1234", listOf(boardId), "title1", "body1")
-        article2 = Article("abcd", listOf(boardId), "title2", "body2")
+        article1 = Article("1234", boardId, "title1", "body1", LocalDateTime.now())
+        article2 = Article("abcd", boardId, "title2", "body2", LocalDateTime.now())
     }
 
     @Test
@@ -59,7 +60,7 @@ internal class ArticleServiceTest {
     @Test
     fun `boardId 가 주어지면 boardId에 연결된 모든 article목록을 반환`() {
         // given
-        given(articleRepository.findByBoards(anyString())).willReturn(Flux.just(article1, article2))
+        given(articleRepository.findByBoardId(anyString())).willReturn(Flux.just(article1, article2))
         // when
         val result = service.listByBoard(boardId)
         // then
@@ -75,7 +76,7 @@ internal class ArticleServiceTest {
         val cafeId = "test"
         given(boardRepository.findByCafeId(anyString()))
             .willReturn(Flux.just(BoardFixtures.create("1", cafeId), BoardFixtures.create("2", cafeId)))
-        given(articleRepository.findByBoardsIn(anyList())).willReturn(Flux.just(article1, article2))
+        given(articleRepository.findByBoardIdIn(anyList())).willReturn(Flux.just(article1, article2))
         // when
         val result = service.listByCafe(cafeId)
         // then
@@ -88,8 +89,8 @@ internal class ArticleServiceTest {
     @Test
     fun `article 생성`() {
         // given
-        val request = ArticleDto(boards = listOf("boardId"), title = "title", body = "body")
-        val article = Article("id", request.boards, request.title, request.body)
+        val request = ArticleRequest(boardId = "boardId", title = "title", body = "body")
+        val article = Article("id", request.boardId, request.title, request.body, LocalDateTime.now())
         given(articleRepository.save(any(Article::class.java)))
             .willReturn(Mono.just(article))
         // when
@@ -104,16 +105,16 @@ internal class ArticleServiceTest {
     @DisplayName("Article 변경")
     inner class UpdateArticle {
         private val article = ArticleFixtures.create()
-        private val request = ArticleDto(article.id, listOf("newBoardId"), "newTitle", "newBody")
+        private val request = ArticleRequest("newBoardId", "newTitle", "newBody")
 
         @Test
         fun `존재하는 article이면 변경된 article 반환`() {
             // given
-            val updatedArticle = Article(article.id, request.boards, request.title, request.body)
-            given(articleRepository.findById(request.id)).willReturn(Mono.just(article))
+            val updatedArticle = Article(article.id, request.boardId, request.title, request.body, LocalDateTime.now())
+            given(articleRepository.findById(article.id)).willReturn(Mono.just(article))
             given(articleRepository.save(any(Article::class.java))).willReturn((Mono.just(updatedArticle)))
             // when
-            val result = service.update(request)
+            val result = service.update(article.id, request)
             // then
             StepVerifier.create(result)
                 .assertNext { then(it).isEqualTo(updatedArticle) }
@@ -123,9 +124,9 @@ internal class ArticleServiceTest {
         @Test
         fun `존재하지 않는 article이면 DataNotFoundException 반환`() {
             // given
-            given(articleRepository.findById(request.id)).willReturn(Mono.empty())
+            given(articleRepository.findById(article.id)).willReturn(Mono.empty())
             // when
-            val result = service.update(request)
+            val result = service.update(article.id, request)
             // then
             StepVerifier.create(result)
                 .expectError(DataNotFoundException::class.java)
