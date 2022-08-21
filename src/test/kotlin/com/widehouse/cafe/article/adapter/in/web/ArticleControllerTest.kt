@@ -20,6 +20,7 @@ import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.web.reactive.function.BodyInserters
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.LocalDateTime.now
 import java.util.UUID
 
 @WebFluxTest(ArticleController::class)
@@ -46,7 +47,7 @@ internal class ArticleControllerTest : DescribeSpec({
                 every { articleService.getArticle(article.id) } returns Mono.just(article)
                 // when
                 webClient.get()
-                    .uri("/article/{articleId}", article.id)
+                    .uri("/articles/{articleId}", article.id)
                     .exchange()
                     .expectStatus().isOk
                     .expectBody()
@@ -58,7 +59,7 @@ internal class ArticleControllerTest : DescribeSpec({
                 every { articleService.getArticle(article.id) } returns Mono.empty()
                 // when
                 webClient.get()
-                    .uri("/article/{articleId}", article.id)
+                    .uri("/articles/{articleId}", article.id)
                     .exchange()
                     .expectStatus().isNotFound
             }
@@ -70,13 +71,13 @@ internal class ArticleControllerTest : DescribeSpec({
                 every { articleService.listByBoard(board.id) }
                     .returns(
                         Flux.just(
-                            Article("1", board.id, "title1", "body1"),
-                            Article("2", board.id, "title2", "body2")
+                            Article("1", board.id, "title1", "body1", now()),
+                            Article("2", board.id, "title2", "body2", now())
                         )
                     )
                 // when
                 webClient.get()
-                    .uri("/article?boardId={boardId}", board.id)
+                    .uri("/articles?boardId={boardId}", board.id)
                     .exchange()
                     .expectStatus().isOk
                     .expectBody()
@@ -90,32 +91,31 @@ internal class ArticleControllerTest : DescribeSpec({
                 every { articleService.listByCafe(cafe.id) }
                     .returns(
                         Flux.just(
-                            Article("1", "board1", "title1", "body1"),
-                            Article("2", "board2", "title2", "body2")
+                            Article("1", "board1", "title1", "body1", now()),
+                            Article("2", "board2", "title2", "body2", now())
                         )
                     )
                 // when
                 webClient.get()
-                    .uri("/article?cafeId={cafeId}", cafe.id)
+                    .uri("/articles?cafeId={cafeId}", cafe.id)
                     .exchange()
                     .expectStatus().isOk
             }
         }
 
         describe("Create Article") {
-            context("POST /article") {
-                val request = ArticleRequest(boardId = board.id, title = "title", body = "body")
-                val article = Article("articleId", request.boardId, request.title, request.body)
-                every { articleService.create(request) } returns Mono.just(article)
+            context("POST /articles") {
+                val article = ArticleFixtures.create()
+                every { articleService.create(any()) } returns Mono.just(article)
 
+                val request = ArticleRequest(board.id, "title", "body")
                 val response = webClient.post()
-                    .uri("/article")
+                    .uri("/articles")
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(request))
                     .exchange()
                 it("then 200 OK") {
                     response.expectStatus().isOk
-
                     verify { articleService.create(request) }
                 }
                 it("return created article id") {
@@ -132,11 +132,11 @@ internal class ArticleControllerTest : DescribeSpec({
 
             it("exist article then update ok") {
                 // given
-                every { articleService.update(article.id, request) } returns Mono.just(Article(article.id, request.boardId, request.title, request.body))
+                every { articleService.update(article.id, request) } returns Mono.just(Article(article.id, request.boardId, request.title, request.body, now()))
                 // when
                 webClient.put()
                     .uri {
-                        it.path("/article/{articleId}")
+                        it.path("/articles/{articleId}")
                             .build(article.id)
                     }
                     .contentType(MediaType.APPLICATION_JSON)
@@ -153,7 +153,7 @@ internal class ArticleControllerTest : DescribeSpec({
                 // then
                 webClient.put()
                     .uri {
-                        it.path("/article/{articleId}")
+                        it.path("/articles/{articleId}")
                             .build(article.id)
                     }
                     .contentType(MediaType.APPLICATION_JSON)

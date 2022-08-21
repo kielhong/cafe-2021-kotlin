@@ -8,6 +8,7 @@ import com.widehouse.cafe.common.exception.DataNotFoundException
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
+import java.time.LocalDateTime
 import java.util.Collections
 import java.util.UUID
 
@@ -32,12 +33,12 @@ class ArticleService(
     }
 
     fun create(articleRequest: ArticleRequest): Mono<Article> =
-        articleRepository.save(Article(UUID.randomUUID().toString(), articleRequest.boardId, articleRequest.title, articleRequest.body))
+        articleRepository.save(Article(UUID.randomUUID().toString(), articleRequest.boardId, articleRequest.title, articleRequest.body, LocalDateTime.now()))
 
     fun update(articleId: String, articleRequest: ArticleRequest): Mono<Article> =
         articleRepository.findById(articleId)
-            .flatMap { article ->
-                articleRepository.save(Article(article.id, articleRequest.boardId, articleRequest.title, articleRequest.body))
+            .flatMap {
+                articleRepository.save(Article(it.id, articleRequest.boardId, articleRequest.title, articleRequest.body, it.createdAt))
             }
             .switchIfEmpty(Mono.error(DataNotFoundException("Article(id=$articleId) not found")))
 }
