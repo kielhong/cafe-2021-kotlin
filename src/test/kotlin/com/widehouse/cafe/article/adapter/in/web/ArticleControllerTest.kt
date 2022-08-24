@@ -114,7 +114,7 @@ internal class ArticleControllerTest : DescribeSpec({
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(request))
                     .exchange()
-                it("then 200 OK") {
+                it("200 OK") {
                     response.expectStatus().isOk
                     verify { articleService.create(request) }
                 }
@@ -128,38 +128,40 @@ internal class ArticleControllerTest : DescribeSpec({
 
         describe("Update Article") {
             val article = ArticleFixtures.create()
-            val request = ArticleRequest("newBoardId", "newTitle", "newBody")
+            val request = ArticleRequest("new-boardId", "new-title", "new-body")
 
-            it("exist article then update ok") {
-                // given
+            context("exist article") {
                 every { articleService.update(article.id, request) } returns Mono.just(Article(article.id, request.boardId, request.title, request.body, now()))
-                // when
-                webClient.put()
-                    .uri {
-                        it.path("/articles/{articleId}")
-                            .build(article.id)
-                    }
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromValue(request))
-                    .exchange()
-                    .expectStatus().isOk
-                    .expectBody()
-                    .jsonPath("$.id").isEqualTo(article.id)
+                it("then update ok") {
+                    webClient.put()
+                        .uri {
+                            it.path("/articles/{articleId}")
+                                .build(article.id)
+                        }
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(request))
+                        .exchange()
+                        .expectStatus().isOk
+                        .expectBody()
+                        .jsonPath("$.id").isEqualTo(article.id)
+
+                    verify { articleService.update(article.id, request) }
+                }
             }
 
-            it("not exist article then 404 error") {
-                // given
+            context("not exist article") {
                 every { articleService.update(article.id, request) } returns Mono.error(DataNotFoundException(article.id))
-                // then
-                webClient.put()
-                    .uri {
-                        it.path("/articles/{articleId}")
-                            .build(article.id)
-                    }
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(BodyInserters.fromValue(request))
-                    .exchange()
-                    .expectStatus().isNotFound
+                it("404 error") {
+                    webClient.put()
+                        .uri {
+                            it.path("/articles/{articleId}")
+                                .build(article.id)
+                        }
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(BodyInserters.fromValue(request))
+                        .exchange()
+                        .expectStatus().isNotFound
+                }
             }
         }
     }
