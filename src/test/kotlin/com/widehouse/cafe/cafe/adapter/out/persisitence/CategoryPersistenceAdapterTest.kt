@@ -2,6 +2,7 @@ package com.widehouse.cafe.cafe.adapter.out.persisitence
 
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
@@ -21,13 +22,18 @@ class CategoryPersistenceAdapterTest : DescribeSpec({
         }
 
         describe("loadAllCategory") {
-            val categories = (1..2).map { CategoryEntity(it.toLong(), "name$it", it) }
-            every { categoryMongoRepository.findAll() } returns Flux.fromIterable(categories)
+            val category1 = CategoryEntity(1L, "name1", 1)
+            val category2 = CategoryEntity(2L, "name2", 2)
+            every { categoryMongoRepository.findAll() } returns Flux.just(category1, category2)
 
             it("should list all categories") {
                 adapter.loadAllCategory()
                     .`as`(StepVerifier::create)
-                    .expectNextMatches { it.id == 1L && it.name == "name1" }
+                    .assertNext {
+                        it.id shouldBe category1.id
+                        it.name shouldBe category1.name
+                        it.listOrder shouldBe category1.listOrder
+                    }
                     .expectNextCount(1)
                     .verifyComplete()
 
