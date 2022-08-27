@@ -5,6 +5,7 @@ import com.widehouse.cafe.article.adapter.`in`.web.dto.ArticleRequest
 import com.widehouse.cafe.article.application.ArticleService
 import com.widehouse.cafe.common.exception.DataNotFoundException
 import org.springframework.http.HttpStatus
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -41,6 +42,10 @@ class ArticleController(private val articleService: ArticleService) {
     fun update(@PathVariable articleId: String, @RequestBody articleRequest: ArticleRequest) =
         articleService.update(articleId, articleRequest)
             .map { mapOf("id" to it.id) }
+
+    @DeleteMapping("{articleId}")
+    fun delete(@PathVariable articleId: String) =
+        articleService.delete(articleId)
 
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler

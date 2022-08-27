@@ -164,5 +164,29 @@ internal class ArticleControllerTest : DescribeSpec({
                 }
             }
         }
+
+        describe("Delete Article") {
+            val article = ArticleFixtures.create()
+            context("article exists") {
+                every { articleService.delete(any()) } returns Mono.empty()
+
+                val response = webClient.delete()
+                    .uri("/articles/{articleId}", article.id)
+                    .exchange()
+                it("200 OK") {
+                    response.expectStatus().isOk
+                    verify { articleService.delete(article.id) }
+                }
+            }
+            context("article not exists") {
+                every { articleService.delete(any()) } returns Mono.error(DataNotFoundException(article.id))
+                val response = webClient.delete()
+                    .uri("/articles/{articleId}", article.id)
+                    .exchange()
+                it("404 NotFound") {
+                    response.expectStatus().isNotFound
+                }
+            }
+        }
     }
 }

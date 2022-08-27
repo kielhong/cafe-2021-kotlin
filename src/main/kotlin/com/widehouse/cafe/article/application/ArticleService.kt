@@ -17,7 +17,9 @@ class ArticleService(
     private val articleRepository: ArticleRepository,
     private val boardRepository: BoardRepository
 ) {
-    fun getArticle(articleId: String): Mono<Article> = articleRepository.findById(articleId)
+    fun getArticle(articleId: String): Mono<Article> =
+        articleRepository.findById(articleId)
+            .switchIfEmpty(Mono.error(DataNotFoundException("Article(id=$articleId) not found")))
 
     fun listByBoard(boardId: String): Flux<Article> = articleRepository.findByBoardId(boardId)
 
@@ -36,9 +38,14 @@ class ArticleService(
         articleRepository.save(Article(UUID.randomUUID().toString(), articleRequest.boardId, articleRequest.title, articleRequest.body, LocalDateTime.now()))
 
     fun update(articleId: String, articleRequest: ArticleRequest): Mono<Article> =
-        articleRepository.findById(articleId)
+        getArticle(articleId)
             .flatMap {
                 articleRepository.save(Article(it.id, articleRequest.boardId, articleRequest.title, articleRequest.body, it.createdAt))
             }
-            .switchIfEmpty(Mono.error(DataNotFoundException("Article(id=$articleId) not found")))
+
+    fun delete(articleId: String): Mono<Void> =
+        getArticle(articleId)
+            .flatMap {
+                articleRepository.deleteById(it.id)
+            }
 }
