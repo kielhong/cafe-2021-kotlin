@@ -27,8 +27,10 @@ import java.time.LocalDateTime
 @ExtendWith(MockitoExtension::class)
 internal class ArticleServiceTest {
     private lateinit var service: ArticleService
+
     @Mock
     private lateinit var articleRepository: ArticleRepository
+
     @Mock
     private lateinit var boardRepository: BoardRepository
 
@@ -127,6 +129,36 @@ internal class ArticleServiceTest {
             given(articleRepository.findById(article.id)).willReturn(Mono.empty())
             // when
             val result = service.update(article.id, request)
+            // then
+            StepVerifier.create(result)
+                .expectError(DataNotFoundException::class.java)
+                .verify()
+        }
+    }
+
+    @Nested
+    @DisplayName("Article 삭제")
+    inner class DeleteArticle {
+        private val article = ArticleFixtures.create()
+
+        @Test
+        fun `존재하는 article이면 article 삭제`() {
+            // given
+            given(articleRepository.findById(article.id)).willReturn(Mono.just(article))
+            given(articleRepository.deleteById(anyString())).willReturn((Mono.empty()))
+            // when
+            val result = service.delete(article.id)
+            // then
+            StepVerifier.create(result)
+                .verifyComplete()
+        }
+
+        @Test
+        fun `존재하지 않는 article이면 DataNotFoundException 반환`() {
+            // given
+            given(articleRepository.findById(article.id)).willReturn(Mono.empty())
+            // when
+            val result = service.delete(article.id)
             // then
             StepVerifier.create(result)
                 .expectError(DataNotFoundException::class.java)
