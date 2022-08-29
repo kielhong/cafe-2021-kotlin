@@ -13,7 +13,7 @@ import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import java.time.LocalDateTime
 
-class CommentCommandServiceTest: DescribeSpec ({
+class CommentCommandServiceTest : DescribeSpec({
     isolationMode = IsolationMode.InstancePerLeaf
 
     val commentRepository = mockk<CommentRepository>()
