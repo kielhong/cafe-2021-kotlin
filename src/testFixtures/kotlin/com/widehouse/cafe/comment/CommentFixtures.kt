@@ -1,7 +1,7 @@
 package com.widehouse.cafe.comment
 
 import com.widehouse.cafe.comment.domain.Comment
-import java.time.ZonedDateTime.now
+import java.time.LocalDateTime.now
 import java.util.UUID
 
 class CommentFixtures {

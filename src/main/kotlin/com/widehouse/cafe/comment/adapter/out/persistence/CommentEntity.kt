@@ -3,7 +3,7 @@ package com.widehouse.cafe.comment.adapter.out.persistence
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 @Document(collection = "comment")
 class CommentEntity(
@@ -12,5 +12,5 @@ class CommentEntity(
     @Indexed
     val articleId: String,
     val body: String,
-    val createdAt: ZonedDateTime
+    val createdAt: LocalDateTime
 )

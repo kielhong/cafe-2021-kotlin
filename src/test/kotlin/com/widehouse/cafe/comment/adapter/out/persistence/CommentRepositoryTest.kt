@@ -7,10 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.context.annotation.Import
 import reactor.test.StepVerifier
-import java.time.ZonedDateTime.now
+import java.time.LocalDateTime.now
 import java.util.UUID
 
-@Suppress("NonAsciiCharacters")
 @DataMongoTest
 @Import(MongoConfig::class)
 class CommentRepositoryTest @Autowired constructor(
